@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { getTranslations } from "next-intl/server";
 import {
   ArrowRight,
@@ -63,16 +62,16 @@ export default async function HomePage() {
             <LanguageSwitcher />
             {!userId ? (
               <>
-                <SignInButton mode="modal">
+                <Link href="/sign-in">
                   <Button variant="ghost" className="hidden sm:inline-flex">
                     {t("signIn")}
                   </Button>
-                </SignInButton>
-                <SignUpButton mode="modal">
+                </Link>
+                <Link href="/sign-up">
                   <Button className="rounded-full bg-slate-900 px-5 text-white hover:bg-slate-800">
                     {t("getStarted")}
                   </Button>
-                </SignUpButton>
+                </Link>
               </>
             ) : (
               <Link href="/dashboard">
@@ -123,7 +122,7 @@ export default async function HomePage() {
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 {!userId ? (
                   <>
-                    <SignUpButton mode="modal">
+                    <Link href="/sign-up">
                       <Button
                         size="lg"
                         className="rounded-full bg-rose-600 px-8 text-white hover:bg-rose-500"
@@ -131,7 +130,7 @@ export default async function HomePage() {
                         {t("ctaPrimary")}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
-                    </SignUpButton>
+                    </Link>
                     <a href="#how">
                       <Button
                         size="lg"
@@ -259,11 +258,11 @@ export default async function HomePage() {
                   </div>
                   <p className="mt-3 text-sm text-slate-600">{t("trialDesc")}</p>
                   {!userId ? (
-                    <SignUpButton mode="modal">
-                      <Button className="mt-6 w-full rounded-full bg-rose-600 py-6 text-white hover:bg-rose-500">
+                    <Link href="/sign-up" className="mt-6 block">
+                      <Button className="w-full rounded-full bg-rose-600 py-6 text-white hover:bg-rose-500">
                         {t("ctaPrimary")}
                       </Button>
-                    </SignUpButton>
+                    </Link>
                   ) : (
                     <Link href="/dashboard" className="mt-6 block">
                       <Button className="w-full rounded-full bg-rose-600 py-6 text-white hover:bg-rose-500">
@@ -285,7 +284,7 @@ export default async function HomePage() {
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-slate-600">{t("finalSubtitle")}</p>
               {!userId ? (
-                <SignUpButton mode="modal">
+                <Link href="/sign-up">
                   <Button
                     size="lg"
                     className="mt-8 rounded-full bg-slate-900 px-8 text-white hover:bg-slate-800"
@@ -293,7 +292,7 @@ export default async function HomePage() {
                     {t("getStarted")}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                </SignUpButton>
+                </Link>
               ) : (
                 <Link href="/dashboard">
                   <Button
