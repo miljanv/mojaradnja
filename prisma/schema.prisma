@@ -1,0 +1,317 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                 String             @id @default(cuid())
+  clerkId            String             @unique
+  email              String             @unique
+  name               String?
+  subscriptionStatus SubscriptionStatus @default(TRIAL)
+  trialEndsAt        DateTime?
+  subscriptionEndsAt DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  shops              Shop[]
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+model Shop {
+  id                String            @id @default(cuid())
+  ownerId           String
+  name              String
+  slug              String            @unique
+  description       String?
+  instagramUsername String?
+  phone             String?
+  email             String?
+  logoUrl           String?
+  coverImageUrl     String?
+  primaryColor      String            @default("#E91E8C")
+  backgroundColor   String            @default("#FAFAFA")
+  cardColor         String            @default("#F5F0EB")
+  fontFamily        String            @default("roboto")
+  heroTitle         String?
+  heroSubtitle      String?
+  returnPolicy      String?
+  exchangePolicy    String?
+  returnAddress     String?
+  isPublished       Boolean           @default(false)
+  orderCounter      Int               @default(1000)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  owner             User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  products          Product[]
+  customers         Customer[]
+  orders            Order[]
+  exchangeRequests  ExchangeRequest[]
+  complaintRequests ComplaintRequest[]
+  messageTemplates  MessageTemplate[]
+  categories        ShopCategory[]
+
+  @@index([ownerId])
+}
+
+model ShopCategory {
+  id        String   @id @default(cuid())
+  shopId    String
+  name      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId, name])
+  @@index([shopId])
+}
+
+model Product {
+  id             String           @id @default(cuid())
+  shopId         String
+  name           String
+  slug           String
+  description    String?
+  price          Decimal          @db.Decimal(10, 2)
+  compareAtPrice Decimal?         @db.Decimal(10, 2)
+  category       String?
+  status         ProductStatus    @default(DRAFT)
+  isFeatured     Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  shop           Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  images         ProductImage[]
+  variants       ProductVariant[]
+  orderItems     OrderItem[]
+
+  @@unique([shopId, slug])
+  @@index([shopId, status])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  url       String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model ProductVariant {
+  id          String   @id @default(cuid())
+  productId   String
+  size        String?
+  color       String?
+  optionLabel String?
+  optionValue String?
+  attributes  Json?
+  sku         String?
+  stock       Int      @default(0)
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems  OrderItem[]
+
+  @@index([productId])
+}
+
+model Customer {
+  id                String            @id @default(cuid())
+  shopId            String
+  fullName          String
+  phone             String
+  email             String?
+  instagramUsername String?
+  address           String?
+  city              String?
+  note              String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  shop              Shop              @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  orders            Order[]
+  exchangeRequests  ExchangeRequest[]
+  complaintRequests ComplaintRequest[]
+
+  @@unique([shopId, phone])
+  @@index([shopId])
+}
+
+model Order {
+  id              String            @id @default(cuid())
+  shopId          String
+  customerId      String
+  orderNumber     String
+  status          OrderStatus       @default(NEW)
+  source          OrderSource       @default(MANUAL)
+  totalAmount     Decimal           @db.Decimal(10, 2)
+  deliveryAddress String?
+  deliveryCity    String?
+  customerPhone   String
+  customerName    String
+  note            String?
+  internalNote    String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  shop            Shop              @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer        Customer          @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+  exchangeRequests ExchangeRequest[]
+  complaintRequests ComplaintRequest[]
+
+  @@unique([shopId, orderNumber])
+  @@index([shopId, status])
+  @@index([shopId, createdAt])
+}
+
+model OrderItem {
+  id          String          @id @default(cuid())
+  orderId     String
+  productId   String?
+  productName String
+  variantId   String?
+  size        String?
+  color       String?
+  variantInfo String?
+  quantity    Int             @default(1)
+  unitPrice   Decimal         @db.Decimal(10, 2)
+  totalPrice  Decimal         @db.Decimal(10, 2)
+  createdAt   DateTime        @default(now())
+  order       Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variant     ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+}
+
+model ExchangeRequest {
+  id                   String         @id @default(cuid())
+  shopId               String
+  orderId              String
+  customerId           String
+  status               ExchangeStatus @default(NEW)
+  reason               String?
+  originalProductName  String
+  originalSize         String?
+  originalColor        String?
+  requestedProductName String?
+  requestedSize        String?
+  requestedColor       String?
+  shippingPaidBy       ShippingPaidBy @default(UNKNOWN)
+  note                 String?
+  internalNote         String?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  shop                 Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  order                Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customer             Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([shopId, status])
+}
+
+model ComplaintRequest {
+  id           String          @id @default(cuid())
+  shopId       String
+  orderId      String?
+  customerId   String
+  status       ComplaintStatus @default(NEW)
+  reason       String
+  description  String?
+  resolution   String?
+  note         String?
+  internalNote String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  shop         Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  order        Order?          @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  customer     Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([shopId, status])
+}
+
+model MessageTemplate {
+  id        String              @id @default(cuid())
+  shopId    String
+  type      MessageTemplateType
+  title     String
+  content   String
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  shop      Shop                @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId, type])
+}
+
+enum ProductStatus {
+  ACTIVE
+  DRAFT
+  ARCHIVED
+  SOLD_OUT
+}
+
+enum OrderStatus {
+  NEW
+  CONFIRMED
+  WAITING_PAYMENT
+  PACKED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+  EXCHANGE_IN_PROGRESS
+}
+
+enum OrderSource {
+  MANUAL
+  MINI_SHOP
+  INSTAGRAM_DM
+  VIBER
+  WHATSAPP
+  PHONE
+}
+
+enum ExchangeStatus {
+  NEW
+  WAITING_CUSTOMER_RETURN
+  RECEIVED_RETURN
+  NEW_ITEM_SENT
+  COMPLETED
+  REJECTED
+  CANCELLED
+}
+
+enum ComplaintStatus {
+  NEW
+  REVIEWING
+  APPROVED
+  REJECTED
+  REFUNDED
+  REPLACED
+  CLOSED
+}
+
+enum ShippingPaidBy {
+  CUSTOMER
+  SELLER
+  SPLIT
+  UNKNOWN
+}
+
+enum MessageTemplateType {
+  ORDER_CONFIRMATION
+  ORDER_SHIPPED
+  EXCHANGE_INSTRUCTIONS
+  COMPLAINT_RECEIVED
+  CUSTOM
+}

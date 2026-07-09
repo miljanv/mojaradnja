@@ -1,36 +1,171 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MojaRadnja
 
-## Getting Started
+**Ne gubi porudžbine u Instagram DM-ovima.** Jednostavan CRM + mini prodavnica za male Instagram/TikTok prodavce.
 
-First, run the development server:
+## Tech stack
+
+- Next.js 16 (App Router) + TypeScript
+- Tailwind CSS + shadcn/ui
+- PostgreSQL + Prisma ORM
+- Clerk authentication
+- UploadThing (slike proizvoda)
+- next-intl (SR default, EN)
+- Zod + React Hook Form + Server Actions
+- Resend (opciono, nije obavezno za MVP)
+
+## Brzi start
+
+### 1. Instalacija
+
+```bash
+npm install
+```
+
+### 2. Environment varijable
+
+Kopiraj `.env.example` u `.env` i popuni vrednosti:
+
+```bash
+cp .env.example .env
+```
+
+| Varijabla | Opis |
+|-----------|------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key |
+| `CLERK_SECRET_KEY` | Clerk secret key |
+| `UPLOADTHING_TOKEN` | UploadThing token (slike) |
+| `NEXT_PUBLIC_UPLOADTHING_APP_ID` | UploadThing app ID |
+| `NEXT_PUBLIC_APP_URL` | npr. `http://localhost:3000` |
+| `RESEND_API_KEY` | Opciono — email notifikacije |
+| `ADMIN_PANEL_PASSWORD` | Šifra za admin panel (default: `Petrovaradin1!`) |
+
+### Admin pristup
+
+1. U Clerk Dashboard → Users → tvoj user → **Public metadata**:
+   ```json
+   { "isAdmin": true }
+   ```
+2. Otvori `/admin` → unesi šifru iz `ADMIN_PANEL_PASSWORD`
+3. U panelu: svi korisnici, shopovi, proizvodi, produženje pretplate, invite i kreiranje korisnika
+
+Novi korisnici dobijaju **30 dana trial** od registracije.
+
+**Invite tok:** invite link vodi na `/invite` → ako si već ulogovan (npr. kao admin), odjavi se → registracija → `/dashboard/onboarding` (kreiranje shopa).
+
+**Upravljaj tuđim butikom:** Admin → Prodavnice / Korisnik → **Upravljaj butikom**. Otvara se njihov dashboard (proizvodi, porudžbine…) sa žutim bannerom. **Izađi iz butika** vraća te u admin.
+
+### 3. Baza podataka
+
+```bash
+# Generiši Prisma klijent
+npm run db:generate
+
+# Primeni migracije (ili db push za brzi dev)
+npm run db:migrate
+# ili: npm run db:push
+
+# Seed demo podataka (Butik Mila)
+npm run db:seed
+```
+
+### 4. Pokretanje
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Otvori [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Demo podaci
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Seed kreira:
 
-## Learn More
+- **Prodavnica:** Butik Mila → `/butik-mila`
+- **5 proizvoda** (Crna haljina, Bež komplet, itd.)
+- **4 kupca** i **5 porudžbina**
+- **1 zamena** i **1 reklamacija**
 
-To learn more about Next.js, take a look at the following resources:
+> Napomena: Demo shop koristi `clerkId: demo_clerk_user`. Za test dashboard-a registruj se preko Clerk-a i kreiraj sopstvenu prodavnicu, ili poveži Clerk nalog sa seed user-om.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Rute
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Javna mini prodavnica (`domen.rs/[shopSlug]`)
 
-## Deploy on Vercel
+| Ruta | Opis |
+|------|------|
+| `/[shopSlug]` | Početna stranica prodavnice |
+| `/[shopSlug]/p/[productSlug]` | Detalj proizvoda + forma za porudžbinu |
+| `/[shopSlug]/return` | Zamene i reklamacije (forma) |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Primer: `http://localhost:3000/butik-mila`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Dashboard (zaštićeno — Clerk)
+
+| Ruta | Opis |
+|------|------|
+| `/dashboard` | Pregled (statistika, brze akcije) |
+| `/dashboard/onboarding` | Kreiranje prodavnice (prvi put) |
+| `/dashboard/shop` | Podešavanja prodavnice |
+| `/dashboard/products` | Lista proizvoda |
+| `/dashboard/products/new` | Novi proizvod |
+| `/dashboard/products/[id]/edit` | Izmena proizvoda |
+| `/dashboard/orders` | Lista porudžbina + CSV export |
+| `/dashboard/orders/new` | **Ručna porudžbina** (iz DM-a) |
+| `/dashboard/orders/[id]` | Detalj + kopiraj poruke |
+| `/dashboard/customers` | Kupci |
+| `/dashboard/customers/[id]` | Profil kupca + rizik |
+| `/dashboard/exchanges` | Zamene |
+| `/dashboard/exchanges/new` | Nova zamena |
+| `/dashboard/exchanges/[id]` | Detalj zamene |
+| `/dashboard/complaints` | Reklamacije |
+| `/dashboard/complaints/new` | Nova reklamacija |
+| `/dashboard/templates` | Šabloni poruka |
+
+### API
+
+| Ruta | Opis |
+|------|------|
+| `/api/uploadthing` | Upload slika |
+| `/api/export/orders` | CSV export porudžbina |
+
+## Višejezičnost
+
+- **Podrazumevani jezik:** Srpski (SR)
+- **Dodatni jezik:** English (EN)
+- Prekidač jezika u header-u (cookie `locale`)
+- UI prevodi u `messages/sr.json` i `messages/en.json`
+
+## Ključne MVP funkcije
+
+1. **Ručni unos porudžbina** — glavni flow za Instagram DM prodavce
+2. **Kopiraj poruku** — potvrda, poslato, zamena (šabloni na srpskom)
+3. **Mini prodavnica** — `/butik-mila` bez online plaćanja
+4. **CSV export** — porudžbine za kurira
+5. **Multi-tenant** — svaki seller vidi samo svoju prodavnicu
+
+## Skripte
+
+```bash
+npm run dev          # Dev server
+npm run build        # Production build
+npm run start        # Production server
+npm run db:migrate   # Migracije
+npm run db:seed      # Demo podaci
+npm run db:studio    # Prisma Studio
+```
+
+## Buduće verzije (NIJE implementirano)
+
+- Instagram / WhatsApp / Viber API integracije
+- Kurirske integracije
+- Online plaćanja i subscription billing
+- AI generator opisa i caption-a
+- Custom domeni po prodavnici
+- Timski pristup i multi-shop
+- Mobilna aplikacija
+- Fiskalni računi
+
+## Licenca
+
+Private — MojaRadnja MVP
