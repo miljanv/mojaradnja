@@ -282,7 +282,7 @@
     "noProducts": "No products available",
     "selectVariant": "Select a variant",
     "outOfStock": "Out of stock",
-    "poweredBy": "Powered by MojaRadnja",
+    "poweredBy": "Powered by MojShop",
     "orderDetails": "Order details",
     "deliveryInfo": "Delivery information",
     "totalPrice": "Total price",
@@ -304,12 +304,12 @@
     "variant": "Variant"
   },
   "onboarding": {
-    "title": "Welcome to MojaRadnja",
+    "title": "Welcome to MojShop",
     "subtitle": "Set up your mini shop and start tracking orders from Instagram",
     "createShop": "Create shop"
   },
   "landing": {
-    "title": "MojaRadnja — CRM for Instagram sellers",
+    "title": "MojShop — CRM for Instagram sellers",
     "subtitle": "Manage orders, customers, exchanges, and complaints in one place",
     "getStarted": "Get started for free",
     "features": "Features",
@@ -361,7 +361,7 @@
     "trialDesc": "Full access to every feature. Admins can extend subscriptions anytime.",
     "finalTitle": "Ready to organize your sales?",
     "finalSubtitle": "Sign up in 30 seconds and see your dashboard.",
-    "footer": "© MojaRadnja — CRM for Instagram sellers"
+    "footer": "© MojShop — CRM for Instagram sellers"
   },
   "subscription": {
     "expiredTitle": "Subscription expired",

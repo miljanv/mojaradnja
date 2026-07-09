@@ -14,7 +14,7 @@ export default async function ShopNotFound() {
       <h1 className="text-2xl font-bold text-slate-900">{t("shopNotFound")}</h1>
       <p className="mt-2 max-w-md text-slate-500">{t("shopNotFoundDesc")}</p>
       <Link href="/" className="mt-8">
-        <Button className="bg-pink-500 hover:bg-pink-600">MojaRadnja</Button>
+        <Button className="bg-pink-500 hover:bg-pink-600">MojShop</Button>
       </Link>
     </div>
   );

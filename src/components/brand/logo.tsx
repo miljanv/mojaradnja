@@ -35,11 +35,12 @@ export function BrandLogo({
             wordmarkClassName
           )}
         >
-          Moja<span className="text-rose-500">Radnja</span>
+          Moj<span className="text-rose-500">Shop</span>
         </span>
       )}
     </span>
   );
 }
 
-export const BRAND_NAME = "MojaRadnja";
+export const BRAND_NAME = "MojShop";
+export const BRAND_DOMAIN = "mojshop.app";

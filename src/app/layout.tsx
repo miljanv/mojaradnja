@@ -13,7 +13,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "MojaRadnja — CRM za Instagram prodavce",
+  title: "MojShop — CRM za Instagram prodavce",
   description:
     "Ne gubi porudžbine u Instagram DM-ovima. Upravljaj proizvodima, porudžbinama, kupcima i reklamacijama na jednom mestu.",
 };

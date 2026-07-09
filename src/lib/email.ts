@@ -93,7 +93,7 @@ function buildOrderEmailHtml(params: NewOrderEmailParams): string {
       Otvori u dashboard-u
     </a>
   </div>
-  <p style="text-align:center;color:#94a3b8;font-size:12px;margin-top:24px;">MojaRadnja — obaveštenje o novoj porudžbini</p>
+  <p style="text-align:center;color:#94a3b8;font-size:12px;margin-top:24px;">MojShop — obaveštenje o novoj porudžbini</p>
 </body>
 </html>`;
 }
@@ -110,7 +110,7 @@ export async function sendNewOrderNotification(
   }
 
   const from =
-    process.env.RESEND_FROM_EMAIL ?? "MojaRadnja <onboarding@resend.dev>";
+    process.env.RESEND_FROM_EMAIL ?? "MojShop <onboarding@resend.dev>";
 
   try {
     const { error } = await resend.emails.send({

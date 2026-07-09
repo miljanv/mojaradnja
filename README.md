@@ -1,4 +1,4 @@
-# MojaRadnja
+# MojShop
 
 **Ne gubi porudžbine u Instagram DM-ovima.** Jednostavan CRM + mini prodavnica za male Instagram/TikTok prodavce.
 
@@ -168,4 +168,4 @@ npm run db:studio    # Prisma Studio
 
 ## Licenca
 
-Private — MojaRadnja MVP
+Private — MojShop MVP (mojshop.app)

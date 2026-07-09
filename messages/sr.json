@@ -282,7 +282,7 @@
     "noProducts": "Trenutno nema proizvoda",
     "selectVariant": "Izaberi varijantu",
     "outOfStock": "Nema na stanju",
-    "poweredBy": "Pokreće MojaRadnja",
+    "poweredBy": "Pokreće MojShop",
     "orderDetails": "Podaci za porudžbinu",
     "deliveryInfo": "Podaci za dostavu",
     "totalPrice": "Ukupna cena",
@@ -304,12 +304,12 @@
     "variant": "Varijanta"
   },
   "onboarding": {
-    "title": "Dobrodošli u MojaRadnja",
+    "title": "Dobrodošli u MojShop",
     "subtitle": "Podesite svoju mini prodavnicu i počnite da pratite porudžbine sa Instagrama",
     "createShop": "Kreiraj prodavnicu"
   },
   "landing": {
-    "title": "MojaRadnja — CRM za Instagram prodavce",
+    "title": "MojShop — CRM za Instagram prodavce",
     "subtitle": "Upravljajte porudžbinama, kupcima, zamenama i reklamacijama na jednom mestu",
     "getStarted": "Započni besplatno",
     "features": "Funkcije",
@@ -361,7 +361,7 @@
     "trialDesc": "Pun pristup svim funkcijama. Admin može da produži pretplatu kad zatreba.",
     "finalTitle": "Spreman da staviš red u prodaju?",
     "finalSubtitle": "Registruj se za 30 sekundi i vidi kako izgleda tvoj dashboard.",
-    "footer": "© MojaRadnja — CRM za Instagram prodavce"
+    "footer": "© MojShop — CRM za Instagram prodavce"
   },
   "subscription": {
     "expiredTitle": "Pretplata je istekla",

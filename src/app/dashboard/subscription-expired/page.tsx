@@ -26,7 +26,7 @@ export default async function SubscriptionExpiredPage() {
         <h1 className="text-2xl font-bold">{t("expiredTitle")}</h1>
         <p className="mt-3 text-slate-600">{t("expiredDesc")}</p>
         <div className="mt-6 flex flex-col gap-2">
-          <a href="mailto:support@mojaradnja.rs">
+          <a href="mailto:support@mojshop.app">
             <Button className="w-full bg-pink-500 hover:bg-pink-600">
               {t("contactSupport")}
             </Button>

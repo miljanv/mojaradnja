@@ -92,7 +92,7 @@ export function LandingDashboardMock() {
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
           </div>
           <div className="mx-auto rounded-md bg-white px-3 py-1 text-[11px] text-slate-400 ring-1 ring-slate-200">
-            app.mojaradnja.rs/dashboard
+            mojshop.app/dashboard
           </div>
         </div>
 
