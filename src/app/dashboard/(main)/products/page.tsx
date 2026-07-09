@@ -39,7 +39,12 @@ export default async function ProductsPage({
   const products = await prisma.product.findMany({
     where: {
       shopId: shop.id,
-      status: status !== "all" ? (status as ProductStatus) : { not: "ARCHIVED" },
+      status:
+        status !== "all"
+          ? status === "INACTIVE"
+            ? { in: ["DRAFT", "ARCHIVED"] as ProductStatus[] }
+            : (status as ProductStatus)
+          : { in: ["ACTIVE", "DRAFT", "SOLD_OUT", "ARCHIVED"] as ProductStatus[] },
       ...(search
         ? {
             OR: [
@@ -84,11 +89,9 @@ export default async function ProductsPage({
             className="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
           >
             <option value="all">{tCommon("all")}</option>
-            {(["ACTIVE", "DRAFT", "SOLD_OUT", "ARCHIVED"] as ProductStatus[]).map((s) => (
-              <option key={s} value={s}>
-                {t(`statuses.${s}`)}
-              </option>
-            ))}
+            <option value="ACTIVE">{t("statuses.ACTIVE")}</option>
+            <option value="INACTIVE">{t("statuses.INACTIVE")}</option>
+            <option value="SOLD_OUT">{t("statuses.SOLD_OUT")}</option>
           </select>
           <Button type="submit" variant="outline">
             {tCommon("filter")}

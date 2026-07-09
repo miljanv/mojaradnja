@@ -89,8 +89,20 @@ export function ProductForm({
   const [pending, startTransition] = useTransition();
   const isEdit = !!product;
 
-  const [status, setStatus] = useState<ProductStatus>(product?.status ?? "DRAFT");
+  const initialStatus: ProductStatus =
+    product?.status === "SOLD_OUT"
+      ? "SOLD_OUT"
+      : product?.status === "ACTIVE"
+        ? "ACTIVE"
+        : "DRAFT";
+  const [status, setStatus] = useState<ProductStatus>(initialStatus);
   const [isFeatured, setIsFeatured] = useState(product?.isFeatured ?? false);
+
+  const statusItems = {
+    ACTIVE: t("statuses.ACTIVE"),
+    DRAFT: t("statuses.INACTIVE"),
+    SOLD_OUT: t("statuses.SOLD_OUT"),
+  } as const;
   const [categoryMode, setCategoryMode] = useState<"existing" | "new">(
     product?.category && !categories.includes(product.category) ? "new" : "existing"
   );
@@ -247,8 +259,13 @@ export function ProductForm({
                     setSelectedCategory(v ?? "");
                   }
                 }}
+                items={{
+                  __none__: t("noCategory"),
+                  ...Object.fromEntries(categories.map((cat) => [cat, cat])),
+                  __new__: t("newCategory"),
+                }}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder={t("selectCategory")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -275,21 +292,29 @@ export function ProductForm({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>{tCommon("status")}</Label>
-              <Select value={status} onValueChange={(v) => v && setStatus(v as ProductStatus)}>
-                <SelectTrigger>
+              <Select
+                value={status === "ARCHIVED" ? "DRAFT" : status}
+                onValueChange={(v) => v && setStatus(v as ProductStatus)}
+                items={statusItems}
+              >
+                <SelectTrigger className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {(["ACTIVE", "DRAFT", "ARCHIVED", "SOLD_OUT"] as ProductStatus[]).map((s) => (
+                  {(Object.keys(statusItems) as Array<keyof typeof statusItems>).map((s) => (
                     <SelectItem key={s} value={s}>
-                      {t(`statuses.${s}`)}
+                      {statusItems[s]}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="flex items-center gap-3 pt-6">
-              <Switch id="featured" checked={isFeatured} onCheckedChange={setIsFeatured} />
+              <Switch
+                id="featured"
+                checked={isFeatured}
+                onCheckedChange={setIsFeatured}
+              />
               <Label htmlFor="featured">{t("featured")}</Label>
             </div>
           </div>

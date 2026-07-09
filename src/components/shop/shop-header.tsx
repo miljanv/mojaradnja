@@ -38,7 +38,7 @@ export function ShopHeader({ shop }: ShopHeaderProps) {
             <img
               src={shop.logoUrl}
               alt={shop.name}
-              className="h-8 w-8 shrink-0 rounded-full object-cover"
+              className="h-8 w-8 shrink-0 rounded-md object-contain"
             />
           ) : (
             <Store

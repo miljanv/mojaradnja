@@ -77,9 +77,9 @@ export async function updateShop(
     instagramUsername?: string;
     phone?: string;
     email?: string;
-    returnAddress?: string;
-    returnPolicy?: string;
-    exchangePolicy?: string;
+    returnAddress?: string | null;
+    returnPolicy?: string | null;
+    exchangePolicy?: string | null;
     logoUrl?: string | null;
     coverImageUrl?: string | null;
     primaryColor?: string;
@@ -111,9 +111,12 @@ export async function updateShop(
         instagramUsername: data.instagramUsername,
         phone: data.phone,
         email: data.email,
-        returnAddress: data.returnAddress,
-        returnPolicy: data.returnPolicy,
-        exchangePolicy: data.exchangePolicy,
+        returnAddress:
+          data.returnAddress === undefined ? undefined : data.returnAddress || null,
+        returnPolicy:
+          data.returnPolicy === undefined ? undefined : data.returnPolicy || null,
+        exchangePolicy:
+          data.exchangePolicy === undefined ? undefined : data.exchangePolicy || null,
         logoUrl: data.logoUrl === undefined ? undefined : data.logoUrl || null,
         coverImageUrl:
           data.coverImageUrl === undefined ? undefined : data.coverImageUrl || null,
@@ -130,7 +133,11 @@ export async function updateShop(
 
     revalidatePath("/dashboard/shop");
     revalidatePath(`/${shop.slug}`);
-    if (nextSlug !== shop.slug) revalidatePath(`/${nextSlug}`);
+    revalidatePath(`/${shop.slug}/return`);
+    if (nextSlug !== shop.slug) {
+      revalidatePath(`/${nextSlug}`);
+      revalidatePath(`/${nextSlug}/return`);
+    }
     return { success: true };
   } catch (e) {
     return { success: false, error: e instanceof Error ? e.message : "Failed to update shop" };

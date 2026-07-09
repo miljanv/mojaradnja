@@ -26,8 +26,9 @@ export function StatusBadge({ status, type = "order" }: StatusBadgeProps) {
     complaint: COMPLAINT_STATUS_COLORS,
     product: {
       ACTIVE: "bg-green-100 text-green-800",
+      INACTIVE: "bg-gray-100 text-gray-800",
       DRAFT: "bg-gray-100 text-gray-800",
-      ARCHIVED: "bg-red-100 text-red-800",
+      ARCHIVED: "bg-gray-100 text-gray-800",
       SOLD_OUT: "bg-orange-100 text-orange-800",
     },
   };
@@ -41,10 +42,14 @@ export function StatusBadge({ status, type = "order" }: StatusBadgeProps) {
 
   const colors = colorMap[type];
   const label = labelMap[type];
+  const displayStatus =
+    type === "product" && (status === "DRAFT" || status === "ARCHIVED")
+      ? "INACTIVE"
+      : status;
 
   return (
-    <Badge variant="secondary" className={cn("font-normal", colors[status])}>
-      {label(status as never)}
+    <Badge variant="secondary" className={cn("font-normal", colors[displayStatus] ?? colors[status])}>
+      {label(displayStatus as never)}
     </Badge>
   );
 }

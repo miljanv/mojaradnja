@@ -45,7 +45,15 @@ export default async function NewOrderPage() {
             id: p.id,
             name: p.name,
             price: Number(p.price),
-            variants: p.variants,
+            variants: p.variants.map((v) => ({
+              id: v.id,
+              size: v.size,
+              color: v.color,
+              optionLabel: v.optionLabel,
+              optionValue: v.optionValue,
+              attributes: v.attributes,
+              stock: v.stock,
+            })),
           }))}
         />
       </div>

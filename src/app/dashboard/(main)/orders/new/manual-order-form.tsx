@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { createManualOrder } from "@/lib/actions/orders";
+import { getVariantDisplayValue } from "@/lib/shop-theme";
 import { formatCurrency } from "@/lib/utils-app";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +41,9 @@ type Product = {
     id: string;
     size: string | null;
     color: string | null;
+    optionLabel: string | null;
+    optionValue: string | null;
+    attributes: unknown;
     stock: number;
   }>;
 };
@@ -74,10 +78,39 @@ export function ManualOrderForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const [customerMode, setCustomerMode] = useState<"existing" | "new">("existing");
-  const [customerId, setCustomerId] = useState("");
+  const hasCustomers = customers.length > 0;
+  const [customerMode, setCustomerMode] = useState<"existing" | "new">(
+    hasCustomers ? "existing" : "new"
+  );
+  const [customerId, setCustomerId] = useState<string | null>(null);
   const [source, setSource] = useState<OrderSource>("MANUAL");
   const [items, setItems] = useState<OrderItem[]>([emptyItem()]);
+
+  const customerItems = useMemo(
+    () =>
+      Object.fromEntries(
+        customers.map((c) => [c.id, `${c.fullName} — ${c.phone}`])
+      ),
+    [customers]
+  );
+
+  const productItems = useMemo(
+    () =>
+      Object.fromEntries(
+        products.map((p) => [p.id, `${p.name} — ${formatCurrency(p.price)}`])
+      ),
+    [products]
+  );
+
+  const sourceItems = useMemo(
+    () =>
+      Object.fromEntries(
+        (["MANUAL", "INSTAGRAM_DM", "VIBER", "WHATSAPP", "PHONE", "MINI_SHOP"] as OrderSource[]).map(
+          (s) => [s, t(`sources.${s}`)]
+        )
+      ),
+    [t]
+  );
 
   const total = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
@@ -152,7 +185,7 @@ export function ManualOrderForm({
     startTransition(async () => {
       const result = await createManualOrder(shopId, {
         ...(customerMode === "existing"
-          ? { customerId }
+          ? { customerId: customerId! }
           : {
               newCustomer: {
                 fullName: form.get("fullName") as string,
@@ -187,59 +220,45 @@ export function ManualOrderForm({
           <CardTitle>{t("customer")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs value={customerMode} onValueChange={(v) => v && setCustomerMode(v as "existing" | "new")}>
-            <TabsList>
-              <TabsTrigger value="existing">Postojeći kupac</TabsTrigger>
-              <TabsTrigger value="new">Novi kupac</TabsTrigger>
-            </TabsList>
+          {hasCustomers ? (
+            <Tabs
+              value={customerMode}
+              onValueChange={(v) => v && setCustomerMode(v as "existing" | "new")}
+            >
+              <TabsList>
+                <TabsTrigger value="existing">Postojeći kupac</TabsTrigger>
+                <TabsTrigger value="new">Novi kupac</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="existing" className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label>{t("customer")}</Label>
-                <Select value={customerId} onValueChange={(v) => v && setCustomerId(v)} required={customerMode === "existing"}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Izaberite kupca" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {customers.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        {c.fullName} — {c.phone}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </TabsContent>
+              <TabsContent value="existing" className="mt-4 space-y-4">
+                <div className="space-y-2">
+                  <Label>{t("customer")}</Label>
+                  <Select
+                    value={customerId}
+                    onValueChange={(v) => setCustomerId(v)}
+                    items={customerItems}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Izaberite kupca" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {customers.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.fullName} — {c.phone}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </TabsContent>
 
-            <TabsContent value="new" className="space-y-4 mt-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="fullName">{tCommon("name")}</Label>
-                  <Input id="fullName" name="fullName" required={customerMode === "new"} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">{tCommon("phone")}</Label>
-                  <Input id="phone" name="phone" required={customerMode === "new"} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">{tCommon("email")}</Label>
-                  <Input id="email" name="email" type="email" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="instagramUsername">Instagram</Label>
-                  <Input id="instagramUsername" name="instagramUsername" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="address">{tCommon("address")}</Label>
-                  <Input id="address" name="address" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="city">{tCommon("city")}</Label>
-                  <Input id="city" name="city" />
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="new" className="mt-4 space-y-4">
+                <NewCustomerFields required={customerMode === "new"} />
+              </TabsContent>
+            </Tabs>
+          ) : (
+            <NewCustomerFields required />
+          )}
         </CardContent>
       </Card>
 
@@ -247,24 +266,30 @@ export function ManualOrderForm({
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{t("items")}</CardTitle>
           <Button type="button" variant="outline" size="sm" onClick={addItem}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             {tCommon("add")}
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           {items.map((item, i) => {
             const product = products.find((p) => p.id === item.productId);
+            const variantItems = product
+              ? Object.fromEntries(
+                  product.variants.map((v) => [v.id, getVariantDisplayValue(v)])
+                )
+              : {};
 
             return (
-              <div key={i} className="grid gap-3 border rounded-lg p-4">
+              <div key={i} className="grid gap-3 rounded-lg border p-4">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Proizvod</Label>
                     <Select
-                      value={item.productId ?? ""}
+                      value={item.productId ?? null}
                       onValueChange={(v) => v && selectProduct(i, v)}
+                      items={productItems}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Izaberite proizvod" />
                       </SelectTrigger>
                       <SelectContent>
@@ -280,16 +305,17 @@ export function ManualOrderForm({
                     <div className="space-y-2">
                       <Label>Varijanta</Label>
                       <Select
-                        value={item.variantId ?? ""}
+                        value={item.variantId ?? null}
                         onValueChange={(v) => v && selectVariant(i, v)}
+                        items={variantItems}
                       >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Veličina / boja" />
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Izaberite varijantu" />
                         </SelectTrigger>
                         <SelectContent>
                           {product.variants.map((v) => (
                             <SelectItem key={v.id} value={v.id}>
-                              {[v.size, v.color].filter(Boolean).join(" / ") || "Standard"}
+                              {getVariantDisplayValue(v)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -336,7 +362,9 @@ export function ManualOrderForm({
               </div>
             );
           })}
-          <p className="text-right font-semibold">{tCommon("total")}: {formatCurrency(total)}</p>
+          <p className="text-right font-semibold">
+            {tCommon("total")}: {formatCurrency(total)}
+          </p>
         </CardContent>
       </Card>
 
@@ -355,14 +383,18 @@ export function ManualOrderForm({
           </div>
           <div className="space-y-2">
             <Label>{t("source")}</Label>
-            <Select value={source} onValueChange={(v) => v && setSource(v as OrderSource)}>
-              <SelectTrigger>
+            <Select
+              value={source}
+              onValueChange={(v) => v && setSource(v as OrderSource)}
+              items={sourceItems}
+            >
+              <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(["MANUAL", "INSTAGRAM_DM", "VIBER", "WHATSAPP", "PHONE", "MINI_SHOP"] as OrderSource[]).map((s) => (
+                {(Object.keys(sourceItems) as OrderSource[]).map((s) => (
                   <SelectItem key={s} value={s}>
-                    {t(`sources.${s}`)}
+                    {sourceItems[s]}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -372,7 +404,7 @@ export function ManualOrderForm({
       </Card>
 
       <Card>
-        <CardContent className="pt-6 grid gap-4 sm:grid-cols-2">
+        <CardContent className="grid gap-4 pt-6 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="note">{tCommon("note")}</Label>
             <Textarea id="note" name="note" rows={2} />
@@ -388,5 +420,38 @@ export function ManualOrderForm({
         {t("manualOrder")}
       </Button>
     </form>
+  );
+}
+
+function NewCustomerFields({ required }: { required?: boolean }) {
+  const tCommon = useTranslations("common");
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      <div className="space-y-2">
+        <Label htmlFor="fullName">{tCommon("name")}</Label>
+        <Input id="fullName" name="fullName" required={required} />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="phone">{tCommon("phone")}</Label>
+        <Input id="phone" name="phone" required={required} />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="email">{tCommon("email")}</Label>
+        <Input id="email" name="email" type="email" />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="instagramUsername">Instagram</Label>
+        <Input id="instagramUsername" name="instagramUsername" />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="address">{tCommon("address")}</Label>
+        <Input id="address" name="address" />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="city">{tCommon("city")}</Label>
+        <Input id="city" name="city" />
+      </div>
+    </div>
   );
 }

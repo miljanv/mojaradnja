@@ -9,22 +9,27 @@ import { UploadButton } from "@/lib/uploadthing";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import "@uploadthing/react/styles.css";
 
 type ShopImageInputProps = {
   value: string;
   onChange: (url: string) => void;
   label: string;
+  hint?: string;
   aspectClassName?: string;
   name?: string;
+  objectFit?: "contain" | "cover";
 };
 
 export function ShopImageInput({
   value,
   onChange,
   label,
+  hint,
   aspectClassName = "aspect-[21/9]",
   name = "coverImageUrl",
+  objectFit = "contain",
 }: ShopImageInputProps) {
   const t = useTranslations("shop");
   const tProducts = useTranslations("products");
@@ -51,9 +56,18 @@ export function ShopImageInput({
 
       {value ? (
         <div
-          className={`relative overflow-hidden rounded-xl border bg-muted ${aspectClassName}`}
+          className={cn(
+            "relative overflow-hidden rounded-xl border bg-slate-100",
+            aspectClassName
+          )}
         >
-          <Image src={value} alt="" fill className="object-cover" unoptimized />
+          <Image
+            src={value}
+            alt=""
+            fill
+            className={objectFit === "contain" ? "object-contain p-2" : "object-cover"}
+            unoptimized
+          />
           <Button
             type="button"
             size="icon"
@@ -66,11 +80,14 @@ export function ShopImageInput({
         </div>
       ) : (
         <div
-          className={`flex items-center justify-center rounded-xl border border-dashed bg-muted/40 ${aspectClassName}`}
+          className={cn(
+            "flex items-center justify-center rounded-xl border border-dashed bg-muted/40",
+            aspectClassName
+          )}
         >
-          <div className="flex flex-col items-center gap-2 text-muted-foreground">
+          <div className="flex flex-col items-center gap-2 px-4 text-center text-muted-foreground">
             <ImagePlus className="h-8 w-8 opacity-50" />
-            <span className="text-xs">{t("coverHint")}</span>
+            <span className="text-xs">{hint ?? t("coverHint")}</span>
           </div>
         </div>
       )}

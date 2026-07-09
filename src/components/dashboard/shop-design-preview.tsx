@@ -93,7 +93,7 @@ export function ShopDesignPreview({
               <img
                 src={logoUrl}
                 alt=""
-                className="h-7 w-7 rounded-full object-cover"
+                className="h-7 w-7 rounded-md object-contain"
               />
             ) : (
               <Store className="h-4 w-4" style={{ color: "var(--shop-primary)" }} />
@@ -105,13 +105,13 @@ export function ShopDesignPreview({
           <ShoppingBag className="h-4 w-4" />
         </header>
 
-        <div className="relative min-h-[150px]">
+        <div className="relative min-h-[150px] bg-slate-900">
           {coverImageUrl ? (
             <Image
               src={coverImageUrl}
               alt=""
               fill
-              className="object-cover"
+              className="object-contain"
               unoptimized
             />
           ) : (

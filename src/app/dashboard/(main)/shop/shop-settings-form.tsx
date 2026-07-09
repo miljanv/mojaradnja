@@ -83,10 +83,10 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
         instagramUsername: getString("instagramUsername").trim() || undefined,
         phone: getString("phone").trim() || undefined,
         email: getString("email").trim() || undefined,
-        returnAddress: getString("returnAddress").trim() || undefined,
-        returnPolicy: getString("returnPolicy").trim() || undefined,
-        exchangePolicy: getString("exchangePolicy").trim() || undefined,
-        logoUrl: getString("logoUrl").trim() || null,
+        returnAddress: getString("returnAddress").trim() || null,
+        returnPolicy: getString("returnPolicy").trim() || null,
+        exchangePolicy: getString("exchangePolicy").trim() || null,
+        logoUrl: logoUrl.trim() || null,
         coverImageUrl: coverImageUrl.trim() || null,
         primaryColor,
         backgroundColor,
@@ -168,18 +168,6 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
                 <p className="text-xs text-muted-foreground">{t("emailNotificationsHint")}</p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="logoUrl">{t("logo")} (URL)</Label>
-                <Input
-                  id="logoUrl"
-                  name="logoUrl"
-                  type="url"
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  placeholder="https://..."
-                />
-              </div>
-
               <div className="flex items-center gap-3">
                 <Switch id="isPublished" checked={isPublished} onCheckedChange={setIsPublished} />
                 <Label htmlFor="isPublished">{t("published")}</Label>
@@ -190,9 +178,20 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
               <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_380px]">
                 <div className="space-y-6 max-w-xl">
                   <ShopImageInput
+                    label={t("logo")}
+                    hint={t("logoHint")}
+                    value={logoUrl}
+                    onChange={setLogoUrl}
+                    name="logoUrl"
+                    aspectClassName="aspect-square max-w-[160px]"
+                    objectFit="contain"
+                  />
+
+                  <ShopImageInput
                     label={t("cover")}
                     value={coverImageUrl}
                     onChange={setCoverImageUrl}
+                    objectFit="contain"
                   />
 
                   <div className="space-y-2">
@@ -220,8 +219,12 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
 
                   <div className="space-y-2">
                     <Label>{t("fontFamily")}</Label>
-                    <Select value={fontFamily} onValueChange={(v) => v && setFontFamily(v)}>
-                      <SelectTrigger>
+                    <Select
+                      value={fontFamily}
+                      onValueChange={(v) => v && setFontFamily(v)}
+                      items={Object.fromEntries(SHOP_FONTS.map((f) => [f.id, f.label]))}
+                    >
+                      <SelectTrigger className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

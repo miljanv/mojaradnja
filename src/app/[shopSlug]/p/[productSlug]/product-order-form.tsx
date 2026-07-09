@@ -15,13 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Variant = {
@@ -43,6 +36,7 @@ type ProductOrderFormProps = {
   productName: string;
   imageUrl?: string | null;
   price: number;
+  productStatus: "ACTIVE" | "SOLD_OUT" | "DRAFT" | "ARCHIVED";
   variants: Variant[];
 };
 
@@ -54,6 +48,7 @@ export function ProductOrderForm({
   productName,
   imageUrl,
   price,
+  productStatus,
   variants,
 }: ProductOrderFormProps) {
   const t = useTranslations("publicShop");
@@ -61,12 +56,15 @@ export function ProductOrderForm({
   const to = useTranslations("orders");
   const { addItem } = useCart();
 
+  const hasVariants = variants.length > 0;
   const availableVariants = useMemo(
     () => variants.filter((v) => v.isAvailable && v.stock > 0),
     [variants]
   );
 
-  const hasVariants = availableVariants.length > 0;
+  const productSoldOut =
+    productStatus === "SOLD_OUT" || (hasVariants && availableVariants.length === 0);
+
   const [selectedVariantId, setSelectedVariantId] = useState(
     availableVariants[0]?.id ?? ""
   );
@@ -81,12 +79,14 @@ export function ProductOrderForm({
   const [pending, startTransition] = useTransition();
 
   const selectedVariant = useMemo(
-    () => availableVariants.find((v) => v.id === selectedVariantId),
-    [availableVariants, selectedVariantId]
+    () => variants.find((v) => v.id === selectedVariantId),
+    [variants, selectedVariantId]
   );
 
+  const selectedAvailable =
+    selectedVariant && selectedVariant.isAvailable && selectedVariant.stock > 0;
+
   const totalPrice = price * quantity;
-  const outOfStock = hasVariants && !selectedVariant;
   const variantInfo = selectedVariant ? formatVariantAttributes(selectedVariant) : undefined;
 
   const thankYouMessage =
@@ -95,7 +95,8 @@ export function ProductOrderForm({
       : "";
 
   function handleAddToCart() {
-    if (hasVariants && !selectedVariant) {
+    if (productSoldOut) return;
+    if (hasVariants && !selectedAvailable) {
       toast.error(t("selectVariant"));
       return;
     }
@@ -116,7 +117,8 @@ export function ProductOrderForm({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (hasVariants && !selectedVariant) {
+    if (productSoldOut) return;
+    if (hasVariants && !selectedAvailable) {
       toast.error(t("selectVariant"));
       return;
     }
@@ -173,86 +175,93 @@ export function ProductOrderForm({
     );
   }
 
+  if (productSoldOut) {
+    return (
+      <div
+        className="rounded-2xl border px-5 py-6"
+        style={{ borderColor: "var(--shop-border)", backgroundColor: "var(--shop-card)" }}
+      >
+        <p className="text-sm font-medium uppercase tracking-wide">{t("soldOut")}</p>
+        <p className="mt-2 text-sm" style={{ color: "var(--shop-text-muted)" }}>
+          {t("soldOutHint")}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <Card
-        className="border-0 shadow-sm"
-        style={{ backgroundColor: "var(--shop-card)" }}
-      >
-        <CardHeader>
-          <CardTitle>{t("orderDetails")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {hasVariants && (
-            <div className="space-y-2">
-              <Label>{t("variant")}</Label>
-              <Select
-                value={selectedVariantId}
-                onValueChange={(value) => setSelectedVariantId(value ?? "")}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder={t("selectVariant")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableVariants.map((v) => (
-                    <SelectItem key={v.id} value={v.id}>
-                      {getVariantDisplayValue(v)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {outOfStock && (
-                <p className="text-sm text-destructive">{t("outOfStock")}</p>
-              )}
-            </div>
-          )}
-
+      <div className="space-y-4">
+        {hasVariants && (
           <div className="space-y-2">
-            <Label htmlFor="quantity">{tc("quantity")}</Label>
-            <Input
-              id="quantity"
-              type="number"
-              min={1}
-              max={99}
-              value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10) || 1))}
-              required
-            />
+            <Label>{t("variant")}</Label>
+            <select
+              className="w-full cursor-pointer rounded-lg border bg-transparent px-3 py-2.5 text-sm outline-none transition-colors hover:border-[var(--shop-primary)]"
+              style={{ borderColor: "var(--shop-border)" }}
+              value={selectedVariantId}
+              onChange={(e) => setSelectedVariantId(e.target.value)}
+            >
+              <option value="">{t("selectVariant")}</option>
+              {variants.map((v) => {
+                const unavailable = !v.isAvailable || v.stock <= 0;
+                return (
+                  <option key={v.id} value={v.id} disabled={unavailable}>
+                    {getVariantDisplayValue(v)}
+                    {unavailable ? ` (${t("soldOut")})` : ""}
+                  </option>
+                );
+              })}
+            </select>
           </div>
+        )}
 
-          <div
-            className="flex items-center justify-between rounded-xl px-4 py-3"
-            style={{ backgroundColor: "var(--shop-primary-muted)" }}
-          >
-            <span className="text-sm font-medium">{t("totalPrice")}</span>
-            <span className="text-lg font-bold text-[var(--shop-primary)]">
-              {formatCurrency(totalPrice)}
-            </span>
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="quantity">{tc("quantity")}</Label>
+          <Input
+            id="quantity"
+            type="number"
+            min={1}
+            max={99}
+            value={quantity}
+            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10) || 1))}
+            required
+          />
+        </div>
 
-          <p className="text-xs" style={{ color: "var(--shop-text-muted)" }}>
-            {t("cashOnDelivery")}
-          </p>
-        </CardContent>
-      </Card>
+        <div
+          className="flex items-center justify-between rounded-xl px-4 py-3"
+          style={{ backgroundColor: "var(--shop-primary-muted)" }}
+        >
+          <span className="text-sm font-medium">{t("totalPrice")}</span>
+          <span className="text-lg font-bold text-[var(--shop-primary)]">
+            {formatCurrency(totalPrice)}
+          </span>
+        </div>
+
+        <p className="text-xs" style={{ color: "var(--shop-text-muted)" }}>
+          {t("cashOnDelivery")}
+        </p>
+      </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Button
+        <button
           type="button"
-          size="lg"
-          variant="outline"
-          disabled={outOfStock}
-          className="flex-1 rounded-full"
+          disabled={hasVariants && !selectedAvailable}
           onClick={handleAddToCart}
+          className="inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition-colors hover:bg-[var(--shop-primary)] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+          style={{
+            borderColor: "var(--shop-primary)",
+            color: "var(--shop-primary)",
+          }}
         >
-          <ShoppingCart className="mr-2 h-4 w-4" />
+          <ShoppingCart className="h-4 w-4" />
           {t("addToCart")}
-        </Button>
+        </button>
         <Button
           type="button"
           size="lg"
-          disabled={outOfStock}
-          className="flex-1 rounded-full bg-[var(--shop-primary)] text-white hover:opacity-90"
+          disabled={hasVariants && !selectedAvailable}
+          className="flex-1 cursor-pointer rounded-full bg-[var(--shop-primary)] text-white hover:opacity-90"
           onClick={() => setShowDirectOrder(true)}
         >
           {t("orderNow")}
@@ -293,7 +302,7 @@ export function ProductOrderForm({
             <Button
               type="button"
               variant="ghost"
-              className="rounded-full"
+              className="cursor-pointer rounded-full"
               onClick={() => setShowDirectOrder(false)}
             >
               {tc("cancel")}
@@ -301,8 +310,8 @@ export function ProductOrderForm({
             <Button
               type="submit"
               size="lg"
-              disabled={pending || outOfStock}
-              className="flex-1 rounded-full bg-[var(--shop-primary)] text-white hover:opacity-90"
+              disabled={pending || (hasVariants && !selectedAvailable)}
+              className="flex-1 cursor-pointer rounded-full bg-[var(--shop-primary)] text-white hover:opacity-90"
             >
               {pending ? tc("loading") : t("confirmOrder")}
             </Button>

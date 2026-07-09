@@ -24,7 +24,7 @@ export default async function ProductPage({ params }: PageProps) {
     where: {
       shopId: shop.id,
       slug: productSlug,
-      status: "ACTIVE",
+      status: { in: ["ACTIVE", "SOLD_OUT"] },
     },
     include: {
       images: { orderBy: { sortOrder: "asc" } },
@@ -39,6 +39,7 @@ export default async function ProductPage({ params }: PageProps) {
   const t = await getTranslations("publicShop");
   const price = Number(product.price);
   const compareAtPrice = product.compareAtPrice ? Number(product.compareAtPrice) : null;
+  const soldOut = product.status === "SOLD_OUT";
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-8 sm:px-8 sm:py-12">
@@ -60,10 +61,17 @@ export default async function ProductPage({ params }: PageProps) {
                   src={product.images[0].url}
                   alt={product.name}
                   fill
-                  className="object-cover"
+                  className={soldOut ? "object-cover grayscale" : "object-cover"}
                   priority
                   unoptimized
                 />
+                {soldOut && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                    <span className="rounded-full bg-white px-4 py-1.5 text-xs font-medium uppercase tracking-wide">
+                      {t("soldOut")}
+                    </span>
+                  </div>
+                )}
               </div>
               {product.images.length > 1 && (
                 <div className="grid grid-cols-4 gap-2">
@@ -108,8 +116,10 @@ export default async function ProductPage({ params }: PageProps) {
               {product.name}
             </h1>
             <div className="mt-4 flex items-baseline gap-3">
-              <span className="text-xl font-medium">{formatCurrency(price)}</span>
-              {compareAtPrice != null && (
+              <span className={soldOut ? "text-xl font-medium line-through opacity-50" : "text-xl font-medium"}>
+                {formatCurrency(price)}
+              </span>
+              {compareAtPrice != null && !soldOut && (
                 <span className="text-base line-through opacity-40">
                   {formatCurrency(compareAtPrice)}
                 </span>
@@ -133,6 +143,7 @@ export default async function ProductPage({ params }: PageProps) {
             productName={product.name}
             imageUrl={product.images[0]?.url}
             price={price}
+            productStatus={product.status}
             variants={product.variants.map((v) => ({
               id: v.id,
               size: v.size,

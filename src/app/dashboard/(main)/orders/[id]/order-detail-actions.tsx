@@ -78,8 +78,18 @@ export function OrderDetailActions({
           <CardTitle>{t("changeStatus")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Select value={status} onValueChange={(v) => v && handleStatusChange(v as OrderStatus)} disabled={pending}>
-            <SelectTrigger className="max-w-xs">
+          <Select
+            value={status}
+            onValueChange={(v) => v && handleStatusChange(v as OrderStatus)}
+            disabled={pending}
+            items={Object.fromEntries(
+              ([
+                "NEW", "CONFIRMED", "WAITING_PAYMENT", "PACKED", "SHIPPED",
+                "DELIVERED", "CANCELLED", "RETURNED", "EXCHANGE_IN_PROGRESS",
+              ] as OrderStatus[]).map((s) => [s, t(`statuses.${s}`)])
+            )}
+          >
+            <SelectTrigger className="max-w-xs w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
