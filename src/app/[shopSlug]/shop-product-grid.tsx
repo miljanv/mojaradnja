@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/components/shop/cart-provider";
-import { getVariantDisplayValue } from "@/lib/shop-theme";
+import { getVariantDisplayValue, shopBtnOutline } from "@/lib/shop-theme";
 import { formatCurrency } from "@/lib/utils-app";
 import { cn } from "@/lib/utils";
 
@@ -112,7 +112,7 @@ export function ShopProductGrid({
       <article className={cn("group", soldOut && "opacity-80")}>
         <Link href={`/${shopSlug}/p/${product.slug}`} className="block">
           <div
-            className="relative aspect-[4/5] overflow-hidden"
+            className="relative aspect-[4/5] overflow-hidden rounded-xl ring-1 ring-black/5"
             style={{ backgroundColor: cardColor }}
           >
             {product.imageUrl ? (
@@ -144,17 +144,17 @@ export function ShopProductGrid({
           </div>
         </Link>
 
-        <div className="mt-3 space-y-2">
+        <div className="mt-3 space-y-2.5">
           <Link
             href={`/${shopSlug}/p/${product.slug}`}
-            className="block text-sm font-medium leading-snug transition-opacity hover:opacity-70"
+            className="block text-sm font-medium leading-snug transition-colors hover:text-[var(--shop-primary)]"
           >
             {product.name}
           </Link>
           <div className="flex items-baseline gap-2">
             <span
-              className={cn("text-sm", soldOut && "line-through opacity-50")}
-              style={{ color: "var(--shop-text-muted)" }}
+              className={cn("text-sm font-medium", soldOut && "line-through opacity-50")}
+              style={{ color: soldOut ? "var(--shop-text-muted)" : "var(--shop-primary)" }}
             >
               {formatCurrency(product.price)}
             </span>
@@ -167,7 +167,7 @@ export function ShopProductGrid({
 
           {hasVariants && !soldOut && (
             <select
-              className="w-full cursor-pointer rounded-md border bg-transparent px-2 py-1.5 text-xs outline-none transition-colors hover:border-[var(--shop-primary)]"
+              className="w-full cursor-pointer rounded-lg border bg-transparent px-2.5 py-2 text-xs outline-none transition-colors hover:border-[var(--shop-primary)] focus:border-[var(--shop-primary)]"
               style={{ borderColor: "var(--shop-border)", color: "var(--shop-text)" }}
               value={selectedVariants[product.id] ?? ""}
               onChange={(e) =>
@@ -198,11 +198,10 @@ export function ShopProductGrid({
             <button
               type="button"
               onClick={() => handleAddToCart(product)}
-              className="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-md border px-3 py-2 text-xs font-medium transition-colors hover:bg-[var(--shop-primary)] hover:text-white"
-              style={{
-                borderColor: "var(--shop-primary)",
-                color: "var(--shop-primary)",
-              }}
+              className={cn(
+                "inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-xs font-medium",
+                shopBtnOutline
+              )}
             >
               <ShoppingCart className="h-3.5 w-3.5" />
               {t("addToCart")}
@@ -232,16 +231,15 @@ export function ShopProductGrid({
       )}
 
       {categories.length > 0 && (
-        <div
-          className="flex flex-wrap gap-x-5 gap-y-2 border-b pb-4"
-          style={{ borderColor: "var(--shop-border)" }}
-        >
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => setActiveCategory(null)}
             className={cn(
-              "cursor-pointer text-sm transition-opacity",
-              activeCategory === null ? "font-medium" : "opacity-50 hover:opacity-80"
+              "cursor-pointer rounded-full px-3.5 py-1.5 text-sm transition-colors",
+              activeCategory === null
+                ? "bg-[var(--shop-primary)] text-white"
+                : "bg-[var(--shop-card)] text-[var(--shop-text-muted)] hover:bg-[var(--shop-primary-muted)] hover:text-[var(--shop-primary)]"
             )}
           >
             {t("allProducts")}
@@ -252,8 +250,10 @@ export function ShopProductGrid({
               type="button"
               onClick={() => setActiveCategory(category)}
               className={cn(
-                "cursor-pointer text-sm transition-opacity",
-                activeCategory === category ? "font-medium" : "opacity-50 hover:opacity-80"
+                "cursor-pointer rounded-full px-3.5 py-1.5 text-sm transition-colors",
+                activeCategory === category
+                  ? "bg-[var(--shop-primary)] text-white"
+                  : "bg-[var(--shop-card)] text-[var(--shop-text-muted)] hover:bg-[var(--shop-primary-muted)] hover:text-[var(--shop-primary)]"
               )}
             >
               {category}

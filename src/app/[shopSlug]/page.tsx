@@ -135,7 +135,7 @@ export default async function ShopHomePage({ params }: PageProps) {
             <div className="mt-8">
               <a
                 href="#products"
-                className="inline-flex items-center rounded-full bg-white px-7 py-3 text-sm font-medium text-slate-900 transition-opacity hover:opacity-90"
+                className="inline-flex items-center rounded-full bg-white px-7 py-3 text-sm font-medium text-slate-900 transition-colors hover:bg-[var(--shop-primary)] hover:text-white"
               >
                 {t("shopNow")}
               </a>

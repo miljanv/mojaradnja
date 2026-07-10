@@ -7,8 +7,10 @@ import { useTranslations } from "next-intl";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "@/components/shop/cart-provider";
 import { formatCurrency } from "@/lib/utils-app";
+import { shopBtnPrimary } from "@/lib/shop-theme";
 import { Button } from "@/components/ui/button";
 import { CartCheckoutForm } from "./cart-checkout-form";
+import { cn } from "@/lib/utils";
 
 type CartPageClientProps = {
   shopSlug: string;
@@ -37,7 +39,7 @@ export function CartPageClient({ shopSlug, shopName }: CartPageClientProps) {
           {t("cartEmptyDesc")}
         </p>
         <Link href={`/${shopSlug}`} className="mt-8 inline-block">
-          <Button className="rounded-full bg-[var(--shop-primary)] px-8 text-white hover:opacity-90">
+          <Button className={cn("rounded-full px-8", shopBtnPrimary)}>
             {t("continueShopping")}
           </Button>
         </Link>
@@ -146,7 +148,7 @@ export function CartPageClient({ shopSlug, shopName }: CartPageClientProps) {
                   {t("cashOnDelivery")}
                 </p>
                 <Button
-                  className="mt-6 w-full rounded-full bg-[var(--shop-primary)] py-6 text-white hover:opacity-90"
+                  className={cn("mt-6 w-full rounded-full py-6", shopBtnPrimary)}
                   onClick={() => setShowCheckout(true)}
                 >
                   {t("checkout")}

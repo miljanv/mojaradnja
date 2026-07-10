@@ -6,11 +6,13 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { CheckCircle2 } from "lucide-react";
 import { createPublicExchangeRequest } from "@/lib/actions/exchanges";
+import { shopBtnPrimary } from "@/lib/shop-theme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 type ExchangeFormProps = {
   shopSlug: string;
@@ -147,7 +149,7 @@ export function ExchangeForm({ shopSlug }: ExchangeFormProps) {
           <Button
             type="submit"
             disabled={pending}
-            className="w-full bg-[var(--shop-primary)] text-white hover:bg-[var(--shop-primary)]/90"
+            className={cn("w-full rounded-lg", shopBtnPrimary)}
           >
             {pending ? tc("loading") : t("sendRequest")}
           </Button>

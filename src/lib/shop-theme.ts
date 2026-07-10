@@ -38,6 +38,17 @@ export const VARIANT_PRESETS = [
   },
 ] as const;
 
+export const PRIMARY_COLOR_PRESETS = [
+  "#E85A6B",
+  "#E91E8C",
+  "#111111",
+  "#2563EB",
+  "#059669",
+  "#7C3AED",
+  "#C2410C",
+  "#0F766E",
+] as const;
+
 export const CARD_COLOR_PRESETS = [
   "#FEF9E7",
   "#FDF2F2",
@@ -59,6 +70,14 @@ export const BACKGROUND_PRESETS = [
   "#18181B",
   "#1A1A2E",
 ] as const;
+
+/** Filled CTA — overrides shadcn hover so text stays white */
+export const shopBtnPrimary =
+  "bg-[var(--shop-primary)] text-white hover:!bg-[var(--shop-primary-hover)] hover:!text-white focus-visible:ring-[var(--shop-primary)]/40";
+
+/** Outline CTA — color via classes (not inline) so hover:text-white works */
+export const shopBtnOutline =
+  "border border-[var(--shop-primary)] bg-transparent text-[var(--shop-primary)] transition-colors hover:bg-[var(--shop-primary)] hover:!text-white hover:border-[var(--shop-primary)]";
 
 export type VariantAttribute = { label: string; value: string };
 
@@ -147,8 +166,18 @@ export function getFontCssFamily(fontId: string): string {
   return FONT_CSS[fontId as ShopFontId] ?? FONT_CSS.roboto;
 }
 
+export function normalizeHex(hex: string): string {
+  const h = hex.trim();
+  if (/^#[0-9A-Fa-f]{6}$/.test(h)) return h.toUpperCase();
+  if (/^#[0-9A-Fa-f]{3}$/.test(h)) {
+    const [, r, g, b] = h;
+    return `#${r}${r}${g}${g}${b}${b}`.toUpperCase();
+  }
+  return h;
+}
+
 function hexToLuminance(hex: string): number {
-  const c = hex.replace("#", "");
+  const c = normalizeHex(hex).replace("#", "");
   if (c.length !== 6) return 1;
   const r = parseInt(c.slice(0, 2), 16) / 255;
   const g = parseInt(c.slice(2, 4), 16) / 255;
@@ -160,6 +189,21 @@ export function isDarkBackground(color: string): boolean {
   return hexToLuminance(color) < 0.45;
 }
 
+export function darkenHex(hex: string, amount = 0.14): string {
+  const c = normalizeHex(hex).replace("#", "");
+  if (c.length !== 6) return hex;
+  const channel = (start: number) =>
+    Math.max(0, Math.round(parseInt(c.slice(start, start + 2), 16) * (1 - amount)))
+      .toString(16)
+      .padStart(2, "0");
+  return `#${channel(0)}${channel(2)}${channel(4)}`.toUpperCase();
+}
+
+function withAlpha(hex: string, alpha = "22"): string {
+  const n = normalizeHex(hex);
+  return n.length === 7 ? `${n}${alpha}` : hex;
+}
+
 export type ShopThemeInput = {
   primaryColor: string;
   backgroundColor: string;
@@ -169,9 +213,11 @@ export type ShopThemeInput = {
 
 export function getShopThemeVars(shop: ShopThemeInput): Record<string, string> {
   const dark = isDarkBackground(shop.backgroundColor);
+  const primary = normalizeHex(shop.primaryColor);
   return {
-    "--shop-primary": shop.primaryColor,
-    "--shop-primary-muted": `${shop.primaryColor}22`,
+    "--shop-primary": primary,
+    "--shop-primary-hover": darkenHex(primary),
+    "--shop-primary-muted": withAlpha(primary, "22"),
     "--shop-bg": shop.backgroundColor,
     "--shop-card": shop.cardColor,
     "--shop-text": dark ? "#F8FAFC" : "#0F172A",

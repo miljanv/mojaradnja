@@ -9,11 +9,13 @@ import { createMiniShopCartOrder } from "@/lib/actions/orders";
 import { useCart } from "@/components/shop/cart-provider";
 import { buildMiniShopThankYouMessage } from "@/lib/messages";
 import { formatCurrency } from "@/lib/utils-app";
+import { shopBtnPrimary } from "@/lib/shop-theme";
 import { CopyButton } from "@/components/shared/copy-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 type CartCheckoutFormProps = {
   shopSlug: string;
@@ -145,7 +147,7 @@ export function CartCheckoutForm({
       <Button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-[var(--shop-primary)] py-6 text-white hover:opacity-90"
+        className={cn("w-full rounded-full py-6", shopBtnPrimary)}
       >
         {pending ? tc("loading") : t("confirmOrder")}
       </Button>

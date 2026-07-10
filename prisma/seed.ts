@@ -31,7 +31,7 @@ async function main() {
       instagramUsername: "butik.mila",
       phone: "+381601234567",
       email: "mila@butikmila.rs",
-      primaryColor: "#E91E8C",
+      primaryColor: "#E85A6B",
       returnPolicy:
         "Reklamacije i zamene su moguće u roku od 14 dana od prijema pošiljke. Proizvod mora biti neoštećen, sa svim originalnim etiketama.",
       exchangePolicy:

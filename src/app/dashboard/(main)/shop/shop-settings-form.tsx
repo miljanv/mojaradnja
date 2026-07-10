@@ -6,6 +6,7 @@ import { updateShop } from "@/lib/actions/shop";
 import {
   BACKGROUND_PRESETS,
   CARD_COLOR_PRESETS,
+  PRIMARY_COLOR_PRESETS,
   SHOP_FONTS,
 } from "@/lib/shop-theme";
 import { ShopDesignPreview } from "@/components/dashboard/shop-design-preview";
@@ -239,28 +240,61 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
 
                   <div className="space-y-2">
                     <Label>{t("primaryColor")}</Label>
-                    <div className="flex items-center gap-3">
-                      <Input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="h-10 w-16" />
-                      <Input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="max-w-[140px]" />
+                    <div className="flex flex-wrap gap-2">
+                      {PRIMARY_COLOR_PRESETS.map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          onClick={() => setPrimaryColor(color)}
+                          className={cn(
+                            "h-10 w-10 rounded-full border-2 transition-transform hover:scale-110",
+                            primaryColor.toUpperCase() === color.toUpperCase()
+                              ? "border-slate-900 ring-2 ring-slate-900/20"
+                              : "border-transparent"
+                          )}
+                          style={{ backgroundColor: color }}
+                          title={color}
+                        />
+                      ))}
+                    </div>
+                    <div className="mt-2 flex items-center gap-3">
+                      <Input
+                        type="color"
+                        value={primaryColor}
+                        onChange={(e) => setPrimaryColor(e.target.value)}
+                        className="h-10 w-16 cursor-pointer"
+                      />
+                      <Input
+                        value={primaryColor}
+                        onChange={(e) => setPrimaryColor(e.target.value)}
+                        className="max-w-[140px]"
+                      />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label>{t("backgroundColor")}</Label>
                     <div className="flex flex-wrap gap-2">
-                      {BACKGROUND_PRESETS.map((color) => (
-                        <button
-                          key={color}
-                          type="button"
-                          onClick={() => setBackgroundColor(color)}
-                          className={cn(
-                            "h-10 w-10 rounded-full border-2 transition-transform hover:scale-110",
-                            backgroundColor === color ? "border-[#E85A6B] ring-2 ring-[#E85A6B]/30" : "border-transparent"
-                          )}
-                          style={{ backgroundColor: color }}
-                          title={color}
-                        />
-                      ))}
+                      {BACKGROUND_PRESETS.map((color) => {
+                        const selected =
+                          backgroundColor.toUpperCase() === color.toUpperCase();
+                        return (
+                          <button
+                            key={color}
+                            type="button"
+                            onClick={() => setBackgroundColor(color)}
+                            className={cn(
+                              "h-10 w-10 rounded-full border-2 transition-transform hover:scale-110",
+                              selected ? "ring-2 ring-black/10" : "border-transparent"
+                            )}
+                            style={{
+                              backgroundColor: color,
+                              borderColor: selected ? primaryColor : "transparent",
+                            }}
+                            title={color}
+                          />
+                        );
+                      })}
                     </div>
                     <Input value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="max-w-[140px] mt-2" />
                   </div>
@@ -268,19 +302,25 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
                   <div className="space-y-2">
                     <Label>{t("cardColor")}</Label>
                     <div className="flex flex-wrap gap-2">
-                      {CARD_COLOR_PRESETS.map((color) => (
-                        <button
-                          key={color}
-                          type="button"
-                          onClick={() => setCardColor(color)}
-                          className={cn(
-                            "h-10 w-10 rounded-full border-2 transition-transform hover:scale-110",
-                            cardColor === color ? "border-[#E85A6B] ring-2 ring-[#E85A6B]/30" : "border-transparent"
-                          )}
-                          style={{ backgroundColor: color }}
-                          title={color}
-                        />
-                      ))}
+                      {CARD_COLOR_PRESETS.map((color) => {
+                        const selected = cardColor.toUpperCase() === color.toUpperCase();
+                        return (
+                          <button
+                            key={color}
+                            type="button"
+                            onClick={() => setCardColor(color)}
+                            className={cn(
+                              "h-10 w-10 rounded-full border-2 transition-transform hover:scale-110",
+                              selected ? "ring-2 ring-black/10" : "border-transparent"
+                            )}
+                            style={{
+                              backgroundColor: color,
+                              borderColor: selected ? primaryColor : "transparent",
+                            }}
+                            title={color}
+                          />
+                        );
+                      })}
                     </div>
                     <Input value={cardColor} onChange={(e) => setCardColor(e.target.value)} className="max-w-[140px] mt-2" />
                   </div>

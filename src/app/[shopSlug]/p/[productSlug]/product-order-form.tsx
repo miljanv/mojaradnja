@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { CheckCircle2, ShoppingCart } from "lucide-react";
 import { createMiniShopOrder } from "@/lib/actions/orders";
 import { useCart } from "@/components/shop/cart-provider";
-import { formatVariantAttributes, getVariantDisplayValue } from "@/lib/shop-theme";
+import { formatVariantAttributes, getVariantDisplayValue, shopBtnOutline, shopBtnPrimary } from "@/lib/shop-theme";
 import { buildMiniShopThankYouMessage } from "@/lib/messages";
 import { formatCurrency } from "@/lib/utils-app";
 import { CopyButton } from "@/components/shared/copy-button";
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 type Variant = {
   id: string;
@@ -247,11 +248,10 @@ export function ProductOrderForm({
           type="button"
           disabled={hasVariants && !selectedAvailable}
           onClick={handleAddToCart}
-          className="inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition-colors hover:bg-[var(--shop-primary)] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-          style={{
-            borderColor: "var(--shop-primary)",
-            color: "var(--shop-primary)",
-          }}
+          className={cn(
+            "inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50",
+            shopBtnOutline
+          )}
         >
           <ShoppingCart className="h-4 w-4" />
           {t("addToCart")}
@@ -260,7 +260,7 @@ export function ProductOrderForm({
           type="button"
           size="lg"
           disabled={hasVariants && !selectedAvailable}
-          className="flex-1 cursor-pointer rounded-full bg-[var(--shop-primary)] text-white hover:opacity-90"
+          className={cn("flex-1 cursor-pointer rounded-full", shopBtnPrimary)}
           onClick={() => setShowDirectOrder(true)}
         >
           {t("orderNow")}
@@ -310,7 +310,7 @@ export function ProductOrderForm({
               type="submit"
               size="lg"
               disabled={pending || (hasVariants && !selectedAvailable)}
-              className="flex-1 cursor-pointer rounded-full bg-[var(--shop-primary)] text-white hover:opacity-90"
+              className={cn("flex-1 cursor-pointer rounded-full", shopBtnPrimary)}
             >
               {pending ? tc("loading") : t("confirmOrder")}
             </Button>

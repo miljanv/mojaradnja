@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { requireActiveSubscription, requireAuthUser, verifyShopOwnership } from "@/lib/auth";
 import { slugify } from "@/lib/utils-app";
 import { DEFAULT_TEMPLATES } from "@/lib/messages";
+import { normalizeHex } from "@/lib/shop-theme";
 import type { MessageTemplateType } from "@/lib/prisma-client";
 
 export type ActionResult<T = void> =
@@ -120,9 +121,13 @@ export async function updateShop(
         logoUrl: data.logoUrl === undefined ? undefined : data.logoUrl || null,
         coverImageUrl:
           data.coverImageUrl === undefined ? undefined : data.coverImageUrl || null,
-        primaryColor: data.primaryColor,
-        backgroundColor: data.backgroundColor,
-        cardColor: data.cardColor,
+        primaryColor: data.primaryColor
+          ? normalizeHex(data.primaryColor)
+          : undefined,
+        backgroundColor: data.backgroundColor
+          ? normalizeHex(data.backgroundColor)
+          : undefined,
+        cardColor: data.cardColor ? normalizeHex(data.cardColor) : undefined,
         fontFamily: data.fontFamily,
         heroTitle: data.heroTitle === undefined ? undefined : data.heroTitle || null,
         heroSubtitle:

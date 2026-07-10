@@ -13,7 +13,7 @@ export const RESERVED_ROUTES = [
 
 export const TRIAL_DAYS = 30;
 
-export const DEFAULT_PRIMARY_COLOR = "#E91E8C";
+export const DEFAULT_PRIMARY_COLOR = "#E85A6B";
 
 export const ORDER_STATUS_COLORS: Record<string, string> = {
   NEW: "bg-blue-100 text-blue-800",

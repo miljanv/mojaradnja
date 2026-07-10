@@ -56,7 +56,7 @@ export default async function ProductPage({ params }: PageProps) {
         <div className="space-y-3">
           {product.images.length > 0 ? (
             <>
-              <div className="relative aspect-[4/5] overflow-hidden bg-[var(--shop-card)]">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-[var(--shop-card)] ring-1 ring-black/5">
                 <Image
                   src={product.images[0].url}
                   alt={product.name}
@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: PageProps) {
                   {product.images.slice(1).map((image) => (
                     <div
                       key={image.id}
-                      className="relative aspect-square overflow-hidden bg-[var(--shop-card)]"
+                      className="relative aspect-square overflow-hidden rounded-lg bg-[var(--shop-card)] ring-1 ring-black/5"
                     >
                       <Image
                         src={image.url}
@@ -94,7 +94,7 @@ export default async function ProductPage({ params }: PageProps) {
             </>
           ) : (
             <div
-              className="flex aspect-[4/5] items-center justify-center bg-[var(--shop-card)]"
+              className="flex aspect-[4/5] items-center justify-center rounded-xl bg-[var(--shop-card)] ring-1 ring-black/5"
               style={{ color: "var(--shop-text-muted)" }}
             >
               —
@@ -116,7 +116,9 @@ export default async function ProductPage({ params }: PageProps) {
               {product.name}
             </h1>
             <div className="mt-4 flex items-baseline gap-3">
-              <span className={soldOut ? "text-xl font-medium line-through opacity-50" : "text-xl font-medium"}>
+              <span
+                className={soldOut ? "text-xl font-medium line-through opacity-50" : "text-xl font-medium text-[var(--shop-primary)]"}
+              >
                 {formatCurrency(price)}
               </span>
               {compareAtPrice != null && !soldOut && (

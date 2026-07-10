@@ -38,7 +38,7 @@ model Shop {
   email             String?
   logoUrl           String?
   coverImageUrl     String?
-  primaryColor      String            @default("#E91E8C")
+  primaryColor      String            @default("#E85A6B")
   backgroundColor   String            @default("#FAFAFA")
   cardColor         String            @default("#F5F0EB")
   fontFamily        String            @default("roboto")

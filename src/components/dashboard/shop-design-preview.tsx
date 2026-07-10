@@ -70,7 +70,13 @@ export function ShopDesignPreview({
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-muted-foreground">{t("livePreview")}</p>
-        <span className="rounded-full bg-[#E85A6B]/12 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#E85A6B]">
+        <span
+          className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+          style={{
+            backgroundColor: "var(--shop-primary-muted)",
+            color: "var(--shop-primary)",
+          }}
+        >
           Live
         </span>
       </div>
@@ -147,11 +153,14 @@ export function ShopDesignPreview({
             {MOCK_PRODUCTS.map((product) => (
               <div key={product.name}>
                 <div
-                  className="aspect-[4/5]"
+                  className="aspect-[4/5] rounded-xl ring-1 ring-black/5"
                   style={{ backgroundColor: cardColor }}
                 />
                 <p className="mt-1.5 truncate text-[10px] font-medium">{product.name}</p>
-                <p className="text-[10px]" style={{ color: "var(--shop-text-muted)" }}>
+                <p
+                  className="text-[10px] font-medium"
+                  style={{ color: "var(--shop-primary)" }}
+                >
                   {product.price}
                 </p>
               </div>
