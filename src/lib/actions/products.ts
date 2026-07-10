@@ -215,3 +215,74 @@ export async function deleteProduct(shopId: string, productId: string): Promise<
     return { success: false, error: e instanceof Error ? e.message : "Failed to delete product" };
   }
 }
+
+export async function duplicateProduct(
+  shopId: string,
+  productId: string
+): Promise<ActionResult<{ productId: string }>> {
+  try {
+    await verifyShopOwnership(shopId);
+
+    const source = await prisma.product.findFirst({
+      where: { id: productId, shopId },
+      include: {
+        images: { orderBy: { sortOrder: "asc" } },
+        variants: { orderBy: { createdAt: "asc" } },
+      },
+    });
+
+    if (!source) {
+      return { success: false, error: "Product not found" };
+    }
+
+    const copyName = `${source.name} (kopija)`;
+    const baseSlug = slugify(copyName);
+    const existing = await prisma.product.findFirst({
+      where: { shopId, slug: baseSlug },
+    });
+    const finalSlug = existing ? `${baseSlug}-${Date.now()}` : baseSlug;
+
+    const product = await prisma.product.create({
+      data: {
+        shopId,
+        name: copyName,
+        slug: finalSlug,
+        description: source.description,
+        price: source.price,
+        compareAtPrice: source.compareAtPrice,
+        category: source.category,
+        status: source.status === "ARCHIVED" ? "DRAFT" : source.status,
+        isFeatured: source.isFeatured,
+        images: {
+          create: source.images.map((img) => ({
+            url: img.url,
+            sortOrder: img.sortOrder,
+          })),
+        },
+        variants: {
+          create: source.variants.length
+            ? source.variants.map((v) => ({
+                size: v.size,
+                color: v.color,
+                optionLabel: v.optionLabel,
+                optionValue: v.optionValue,
+                attributes: v.attributes ?? undefined,
+                sku: v.sku,
+                stock: v.stock,
+                isAvailable: v.isAvailable,
+              }))
+            : [{ stock: 100, isAvailable: true }],
+        },
+      },
+    });
+
+    revalidatePath("/dashboard/products");
+    revalidatePath(`/dashboard/products/${product.id}/edit`);
+    return { success: true, data: { productId: product.id } };
+  } catch (e) {
+    return {
+      success: false,
+      error: e instanceof Error ? e.message : "Failed to duplicate product",
+    };
+  }
+}

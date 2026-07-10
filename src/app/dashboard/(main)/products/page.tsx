@@ -7,6 +7,7 @@ import { DashboardHeader } from "@/components/dashboard/header";
 import { StatusBadge } from "@/components/dashboard/status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { DeleteProductButton } from "./delete-product-button";
+import { DuplicateProductButton } from "./duplicate-product-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -148,10 +149,11 @@ export default async function ProductsPage({
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           <Link href={`/dashboard/products/${product.id}/edit`}>
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" size="sm" title={t("edit")}>
                               <Pencil className="h-4 w-4" />
                             </Button>
                           </Link>
+                          <DuplicateProductButton shopId={shop.id} productId={product.id} />
                           <DeleteProductButton shopId={shop.id} productId={product.id} />
                         </div>
                       </TableCell>
