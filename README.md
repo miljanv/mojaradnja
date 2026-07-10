@@ -29,16 +29,16 @@ Kopiraj `.env.example` u `.env` i popuni vrednosti:
 cp .env.example .env
 ```
 
-| Varijabla | Opis |
-|-----------|------|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key |
-| `CLERK_SECRET_KEY` | Clerk secret key |
-| `UPLOADTHING_TOKEN` | UploadThing token (slike) |
-| `NEXT_PUBLIC_UPLOADTHING_APP_ID` | UploadThing app ID |
-| `NEXT_PUBLIC_APP_URL` | npr. `http://localhost:3000` |
-| `RESEND_API_KEY` | Opciono — email notifikacije |
-| `ADMIN_PANEL_PASSWORD` | Šifra za admin panel (default: `Petrovaradin1!`) |
+| Varijabla                           | Opis                                             |
+| ----------------------------------- | ------------------------------------------------ |
+| `DATABASE_URL`                      | PostgreSQL connection string                     |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key                            |
+| `CLERK_SECRET_KEY`                  | Clerk secret key                                 |
+| `UPLOADTHING_TOKEN`                 | UploadThing token (slike)                        |
+| `NEXT_PUBLIC_UPLOADTHING_APP_ID`    | UploadThing app ID                               |
+| `NEXT_PUBLIC_APP_URL`               | npr. `http://localhost:3000`                     |
+| `RESEND_API_KEY`                    | Opciono — email notifikacije                     |
+| `ADMIN_PANEL_PASSWORD`              | Šifra za admin panel (default: `Petrovaradin1!`) |
 
 ### Admin pristup
 
@@ -84,11 +84,11 @@ Otvori [http://localhost:3000](http://localhost:3000)
 
 `npm run db:seed:demo` kreira:
 
-| | |
-|--|--|
-| **Email** | `demo@mojshop.app` |
-| **Lozinka** | `DemoMojShop2026!` |
-| **Shop** | Atelier Luna → `/atelier-luna` |
+|             |                                                                                |
+| ----------- | ------------------------------------------------------------------------------ |
+| **Email**   | `demo@mojshop.app`                                                             |
+| **Lozinka** | `DemoMojShop2026!`                                                             |
+| **Shop**    | Atelier Luna → `/atelier-luna`                                                 |
 | **Sadržaj** | 8 proizvoda, 6 kupaca, 10 porudžbina, zamene, reklamacije, šabloni, kategorije |
 
 Prijavi se na `/sign-in`, pa otvori dashboard — nalog ima ACTIVE pretplatu (ne ističe).
@@ -99,41 +99,41 @@ Prijavi se na `/sign-in`, pa otvori dashboard — nalog ima ACTIVE pretplatu (ne
 
 ### Javna mini prodavnica (`domen.rs/[shopSlug]`)
 
-| Ruta | Opis |
-|------|------|
-| `/[shopSlug]` | Početna stranica prodavnice |
+| Ruta                          | Opis                                   |
+| ----------------------------- | -------------------------------------- |
+| `/[shopSlug]`                 | Početna stranica prodavnice            |
 | `/[shopSlug]/p/[productSlug]` | Detalj proizvoda + forma za porudžbinu |
-| `/[shopSlug]/return` | Zamene i reklamacije (forma) |
+| `/[shopSlug]/return`          | Zamene i reklamacije (forma)           |
 
 Primer: `http://localhost:3000/butik-mila`
 
 ### Dashboard (zaštićeno — Clerk)
 
-| Ruta | Opis |
-|------|------|
-| `/dashboard` | Pregled (statistika, brze akcije) |
-| `/dashboard/onboarding` | Kreiranje prodavnice (prvi put) |
-| `/dashboard/shop` | Podešavanja prodavnice |
-| `/dashboard/products` | Lista proizvoda |
-| `/dashboard/products/new` | Novi proizvod |
-| `/dashboard/products/[id]/edit` | Izmena proizvoda |
-| `/dashboard/orders` | Lista porudžbina + CSV export |
-| `/dashboard/orders/new` | **Ručna porudžbina** (iz DM-a) |
-| `/dashboard/orders/[id]` | Detalj + kopiraj poruke |
-| `/dashboard/customers` | Kupci |
-| `/dashboard/customers/[id]` | Profil kupca + rizik |
-| `/dashboard/exchanges` | Zamene |
-| `/dashboard/exchanges/new` | Nova zamena |
-| `/dashboard/exchanges/[id]` | Detalj zamene |
-| `/dashboard/complaints` | Reklamacije |
-| `/dashboard/complaints/new` | Nova reklamacija |
-| `/dashboard/templates` | Šabloni poruka |
+| Ruta                            | Opis                              |
+| ------------------------------- | --------------------------------- |
+| `/dashboard`                    | Pregled (statistika, brze akcije) |
+| `/dashboard/onboarding`         | Kreiranje prodavnice (prvi put)   |
+| `/dashboard/shop`               | Podešavanja prodavnice            |
+| `/dashboard/products`           | Lista proizvoda                   |
+| `/dashboard/products/new`       | Novi proizvod                     |
+| `/dashboard/products/[id]/edit` | Izmena proizvoda                  |
+| `/dashboard/orders`             | Lista porudžbina + CSV export     |
+| `/dashboard/orders/new`         | **Ručna porudžbina** (iz DM-a)    |
+| `/dashboard/orders/[id]`        | Detalj + kopiraj poruke           |
+| `/dashboard/customers`          | Kupci                             |
+| `/dashboard/customers/[id]`     | Profil kupca + rizik              |
+| `/dashboard/exchanges`          | Zamene                            |
+| `/dashboard/exchanges/new`      | Nova zamena                       |
+| `/dashboard/exchanges/[id]`     | Detalj zamene                     |
+| `/dashboard/complaints`         | Reklamacije                       |
+| `/dashboard/complaints/new`     | Nova reklamacija                  |
+| `/dashboard/templates`          | Šabloni poruka                    |
 
 ### API
 
-| Ruta | Opis |
-|------|------|
-| `/api/uploadthing` | Upload slika |
+| Ruta                 | Opis                  |
+| -------------------- | --------------------- |
+| `/api/uploadthing`   | Upload slika          |
 | `/api/export/orders` | CSV export porudžbina |
 
 ## Višejezičnost

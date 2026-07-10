@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth, useSignIn } from "@clerk/nextjs";
@@ -10,9 +10,10 @@ import { Button } from "@/components/ui/button";
 export default function DemoLoginPage() {
   const router = useRouter();
   const { isSignedIn, isLoaded: authLoaded } = useAuth();
-  const { isLoaded, signIn, setActive } = useSignIn();
+  const { signIn } = useSignIn();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(true);
+  const started = useRef(false);
 
   useEffect(() => {
     if (!authLoaded) return;
@@ -20,7 +21,8 @@ export default function DemoLoginPage() {
       router.replace("/dashboard");
       return;
     }
-    if (!isLoaded || !signIn || !setActive) return;
+    if (!signIn || started.current) return;
+    started.current = true;
 
     let cancelled = false;
 
@@ -34,16 +36,23 @@ export default function DemoLoginPage() {
           throw new Error(data.error || "Demo nalog nije dostupan");
         }
 
-        const attempt = await signIn!.create({
-          strategy: "ticket",
+        const { error: ticketError } = await signIn.ticket({
           ticket: data.token,
         });
-
         if (cancelled) return;
+        if (ticketError) {
+          throw new Error(ticketError.message || "Ticket prijava nije uspela");
+        }
 
-        if (attempt.status === "complete" && attempt.createdSessionId) {
-          await setActive!({ session: attempt.createdSessionId });
-          router.replace("/dashboard");
+        if (signIn.status === "complete") {
+          const { error: finalizeError } = await signIn.finalize({
+            navigate: async () => {
+              router.replace("/dashboard");
+            },
+          });
+          if (finalizeError) {
+            throw new Error(finalizeError.message || "Finalizacija nije uspela");
+          }
           return;
         }
 
@@ -62,7 +71,7 @@ export default function DemoLoginPage() {
     return () => {
       cancelled = true;
     };
-  }, [authLoaded, isSignedIn, isLoaded, signIn, setActive, router]);
+  }, [authLoaded, isSignedIn, signIn, router]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#FDF8F5] px-4">
@@ -89,10 +98,12 @@ export default function DemoLoginPage() {
             <div className="rounded-lg bg-[#FDF8F5] px-3 py-3 text-sm text-[#111111]">
               <p className="font-medium">Ručna prijava</p>
               <p className="mt-1 text-[#6B7280]">
-                Username: <span className="font-mono text-[#111111]">atelier-luna-demo</span>
+                Username:{" "}
+                <span className="font-mono text-[#111111]">atelier-luna-demo</span>
               </p>
               <p className="text-[#6B7280]">
-                Lozinka: <span className="font-mono text-[#111111]">DemoMojShop2026!</span>
+                Lozinka:{" "}
+                <span className="font-mono text-[#111111]">DemoMojShop2026!</span>
               </p>
             </div>
             <Link href="/sign-in" className="block">
