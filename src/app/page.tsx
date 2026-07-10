@@ -100,15 +100,15 @@ export default async function HomePage() {
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
-                    <a href="#how">
+                    <Link href="/demo">
                       <Button
                         size="lg"
                         variant="outline"
                         className="rounded-full border-[#EDE4DC] bg-white px-8"
                       >
-                        {t("ctaSecondary")}
+                        {t("tryDemo")}
                       </Button>
-                    </a>
+                    </Link>
                   </>
                 ) : (
                   <Link href="/dashboard">
@@ -123,6 +123,11 @@ export default async function HomePage() {
                 )}
               </div>
               <p className="mt-4 text-sm text-[#6B7280]">{t("trialNote")}</p>
+              {!userId && (
+                <p className="mt-2 text-xs text-[#9CA3AF]">
+                  {t("demoCredentials")}
+                </p>
+              )}
             </div>
           </Reveal>
 

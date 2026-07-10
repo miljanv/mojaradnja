@@ -27,7 +27,7 @@ export default async function NewProductPage() {
           </Link>
         }
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <ProductForm shopId={shop.id} categories={categories} />
       </div>
     </div>

@@ -57,7 +57,7 @@ export default async function ExchangeDetailPage({ params }: { params: Params })
         }
       />
 
-      <div className="p-6 grid lg:grid-cols-3 gap-6">
+      <div className="p-4 sm:p-6 grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>

@@ -116,7 +116,7 @@ async function main() {
         { size: "S", color: "Bela", stock: 6 },
         { size: "M", color: "Bela", stock: 4 },
       ],
-      image: "https://images.unsplash.com/photo-1596755094514-f87e34085b56?w=600&h=800&fit=crop",
+      image: "https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600&h=800&fit=crop",
     },
     {
       name: "Letnja haljina",
@@ -129,7 +129,7 @@ async function main() {
         { size: "S", color: "Cvetni", stock: 3 },
         { size: "M", color: "Cvetni", stock: 2 },
       ],
-      image: "https://images.unsplash.com/photo-1572804013309-59a748b524e5?w=600&h=800&fit=crop",
+      image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&h=800&fit=crop",
     },
   ];
 

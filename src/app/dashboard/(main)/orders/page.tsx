@@ -66,15 +66,18 @@ export default async function OrdersPage({
       <DashboardHeader
         title={t("title")}
         actions={
-          <div className="flex gap-2">
-            <a href={exportHref}>
-              <Button variant="outline">
+          <div className="flex w-full gap-2 sm:w-auto">
+            <a href={exportHref} className="shrink-0">
+              <Button variant="outline" size="icon" className="sm:hidden" aria-label={`${tCommon("export")} CSV`}>
+                <Download className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" className="hidden sm:inline-flex">
                 <Download className="h-4 w-4 mr-2" />
                 {tCommon("export")} CSV
               </Button>
             </a>
-            <Link href="/dashboard/orders/new">
-              <Button className="bg-[#E85A6B] hover:bg-[#D44558]">
+            <Link href="/dashboard/orders/new" className="min-w-0 flex-1 sm:flex-initial">
+              <Button className="w-full bg-[#E85A6B] hover:bg-[#D44558] sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 {tNav("newOrder")}
               </Button>
@@ -83,18 +86,18 @@ export default async function OrdersPage({
         }
       />
 
-      <div className="p-6 space-y-4">
-        <form className="flex flex-wrap gap-3">
+      <div className="p-4 sm:p-6 space-y-4">
+        <form className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <Input
             name="search"
             placeholder={tCommon("search")}
             defaultValue={search}
-            className="max-w-xs"
+            className="w-full sm:max-w-xs"
           />
           <select
             name="status"
             defaultValue={status}
-            className="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+            className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm sm:w-auto"
           >
             <option value="all">{tCommon("all")}</option>
             {([
@@ -109,7 +112,7 @@ export default async function OrdersPage({
           <select
             name="source"
             defaultValue={source}
-            className="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+            className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm sm:w-auto"
           >
             <option value="all">{tCommon("all")}</option>
             {(["MANUAL", "MINI_SHOP", "INSTAGRAM_DM", "VIBER", "WHATSAPP", "PHONE"] as OrderSource[]).map((s) => (
@@ -118,7 +121,7 @@ export default async function OrdersPage({
               </option>
             ))}
           </select>
-          <Button type="submit" variant="outline">
+          <Button type="submit" variant="outline" className="w-full sm:w-auto">
             {tCommon("filter")}
           </Button>
         </form>
@@ -133,7 +136,7 @@ export default async function OrdersPage({
             }
           />
         ) : (
-          <div className="rounded-lg border bg-white">
+          <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
             <Table>
               <TableHeader>
                 <TableRow>

@@ -71,7 +71,7 @@ export default async function ExchangesPage({
         }
       />
 
-      <div className="p-6 space-y-4">
+      <div className="p-4 sm:p-6 space-y-4">
         <form className="flex flex-wrap gap-3">
           <Input name="search" placeholder={tCommon("search")} defaultValue={search} className="max-w-xs" />
           <select
@@ -102,7 +102,7 @@ export default async function ExchangesPage({
             }
           />
         ) : (
-          <div className="rounded-lg border bg-white">
+          <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
             <Table>
               <TableHeader>
                 <TableRow>

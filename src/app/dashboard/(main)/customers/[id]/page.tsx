@@ -81,7 +81,7 @@ export default async function CustomerDetailPage({ params }: { params: Params })
         }
       />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-6">
         <div className="grid gap-4 sm:grid-cols-4">
           <StatCard title={t("totalOrders")} value={customer.orders.length} />
           <StatCard title={t("totalSpent")} value={formatCurrency(totalSpent)} />

@@ -50,7 +50,10 @@
     "viewShop": "Pogledaj prodavnicu",
     "newOrder": "Nova porudžbina",
     "addProduct": "Dodaj proizvod",
-    "reports": "Izveštaji"
+    "reports": "Izveštaji",
+    "menu": "Meni",
+    "openMenu": "Otvori meni",
+    "closeMenu": "Zatvori meni"
   },
   "dashboard": {
     "welcome": "Dobrodošli",
@@ -287,7 +290,8 @@
     "noProducts": "Trenutno nema proizvoda",
     "selectVariant": "Izaberi varijantu",
     "outOfStock": "Nema na stanju",
-    "poweredBy": "Pokreće MojShop",
+    "poweredBy": "Pokreće",
+    "manageShop": "Upravljaj prodavnicom",
     "orderDetails": "Podaci za porudžbinu",
     "deliveryInfo": "Podaci za dostavu",
     "totalPrice": "Ukupna cena",
@@ -331,6 +335,8 @@
     "heroSubtitle": "Mini prodavnica, CRM, zamene i gotove poruke — sve na jednom mestu. Bez Excel tabela i izgubljenih poruka.",
     "ctaPrimary": "Probaj 30 dana besplatno",
     "ctaSecondary": "Pogledaj kako radi",
+    "tryDemo": "Probaj demo nalog",
+    "demoCredentials": "Demo: username atelier-luna-demo / DemoMojShop2026! · ili /demo · shop /atelier-luna",
     "openDashboard": "Otvori dashboard",
     "trialNote": "Bez kartice. Trial traje 30 dana od registracije.",
     "featuresTitle": "Sve što ti treba da prodaš više",

@@ -37,7 +37,7 @@ export default async function NewComplaintPage() {
           </Link>
         }
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <ComplaintForm shopId={shop.id} customers={customers} orders={orders} />
       </div>
     </div>

@@ -65,8 +65,11 @@ npm run db:generate
 npm run db:migrate
 # ili: npm run db:push
 
-# Seed demo podataka (Butik Mila)
+# Seed demo podataka (Butik Mila — lokalni seed bez Clerk logina)
 npm run db:seed
+
+# Pun demo nalog + shop (Atelier Luna) sa Clerk loginom
+npm run db:seed:demo
 ```
 
 ### 4. Pokretanje
@@ -77,16 +80,20 @@ npm run dev
 
 Otvori [http://localhost:3000](http://localhost:3000)
 
-## Demo podaci
+## Demo nalog (živ prikaz)
 
-Seed kreira:
+`npm run db:seed:demo` kreira:
 
-- **Prodavnica:** Butik Mila → `/butik-mila`
-- **5 proizvoda** (Crna haljina, Bež komplet, itd.)
-- **4 kupca** i **5 porudžbina**
-- **1 zamena** i **1 reklamacija**
+| | |
+|--|--|
+| **Email** | `demo@mojshop.app` |
+| **Lozinka** | `DemoMojShop2026!` |
+| **Shop** | Atelier Luna → `/atelier-luna` |
+| **Sadržaj** | 8 proizvoda, 6 kupaca, 10 porudžbina, zamene, reklamacije, šabloni, kategorije |
 
-> Napomena: Demo shop koristi `clerkId: demo_clerk_user`. Za test dashboard-a registruj se preko Clerk-a i kreiraj sopstvenu prodavnicu, ili poveži Clerk nalog sa seed user-om.
+Prijavi se na `/sign-in`, pa otvori dashboard — nalog ima ACTIVE pretplatu (ne ističe).
+
+> Stari test shop **Svetofor** (`/svetofor-zr`) se migrira u Atelier Luna.
 
 ## Rute
 

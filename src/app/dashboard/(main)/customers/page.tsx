@@ -57,7 +57,7 @@ export default async function CustomersPage({
     <div>
       <DashboardHeader title={t("title")} />
 
-      <div className="p-6 space-y-4">
+      <div className="p-4 sm:p-6 space-y-4">
         <form className="flex gap-3">
           <Input
             name="search"
@@ -73,7 +73,7 @@ export default async function CustomersPage({
         {customers.length === 0 ? (
           <EmptyState title={tCommon("noResults")} />
         ) : (
-          <div className="rounded-lg border bg-white">
+          <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
             <Table>
               <TableHeader>
                 <TableRow>

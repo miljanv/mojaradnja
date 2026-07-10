@@ -10,7 +10,7 @@ export default async function ShopSettingsPage() {
   return (
     <div>
       <DashboardHeader title={t("settings")} />
-      <div className="p-6 max-w-6xl">
+      <div className="p-4 sm:p-6 max-w-6xl">
         <ShopSettingsForm shop={shop} />
       </div>
     </div>

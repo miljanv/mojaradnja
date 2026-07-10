@@ -1,7 +1,7 @@
 import { requireShop } from "@/lib/auth";
 import { getDaysRemaining, hasActiveSubscription } from "@/lib/subscription";
 import { prisma } from "@/lib/db";
-import { DashboardSidebar } from "@/components/dashboard/sidebar";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { TrialBanner } from "@/components/dashboard/trial-banner";
 import { ImpersonationBanner } from "@/components/dashboard/impersonation-banner";
 
@@ -17,7 +17,9 @@ export default async function DashboardMainLayout({
     prisma.exchangeRequest.count({
       where: {
         shopId: shop.id,
-        status: { in: ["NEW", "WAITING_CUSTOMER_RETURN", "RECEIVED_RETURN", "NEW_ITEM_SENT"] },
+        status: {
+          in: ["NEW", "WAITING_CUSTOMER_RETURN", "RECEIVED_RETURN", "NEW_ITEM_SENT"],
+        },
       },
     }),
     prisma.complaintRequest.count({
@@ -33,23 +35,20 @@ export default async function DashboardMainLayout({
       : null;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#FDF8F5]">
-      <DashboardSidebar
-        shopSlug={shop.slug}
-        shopName={shop.name}
-        counts={{ newOrders, exchanges, complaints }}
-        impersonating={!!impersonating}
-      />
-      <main className="flex-1 overflow-y-auto">
-        {impersonating && impersonatedOwner && (
-          <ImpersonationBanner
-            shopName={shop.name}
-            ownerEmail={impersonatedOwner.email}
-          />
-        )}
-        {daysLeft != null && daysLeft <= 14 && <TrialBanner days={daysLeft} />}
-        {children}
-      </main>
-    </div>
+    <DashboardShell
+      shopSlug={shop.slug}
+      shopName={shop.name}
+      counts={{ newOrders, exchanges, complaints }}
+      impersonating={!!impersonating}
+    >
+      {impersonating && impersonatedOwner && (
+        <ImpersonationBanner
+          shopName={shop.name}
+          ownerEmail={impersonatedOwner.email}
+        />
+      )}
+      {daysLeft != null && daysLeft <= 14 && <TrialBanner days={daysLeft} />}
+      {children}
+    </DashboardShell>
   );
 }

@@ -54,12 +54,23 @@ export function ShopFooter({ shop }: ShopFooterProps) {
           </div>
         </div>
 
-        <p className="mt-10 text-xs" style={{ color: "var(--shop-text-muted)" }}>
-          {t("poweredBy")}{" "}
-          <Link href="/" className="underline-offset-2 hover:underline">
-            {BRAND_NAME}
+        <div
+          className="mt-10 flex flex-wrap items-center justify-between gap-3 text-xs"
+          style={{ color: "var(--shop-text-muted)" }}
+        >
+          <p>
+            {t("poweredBy")}{" "}
+            <Link href="/" className="font-medium underline-offset-2 hover:underline">
+              {BRAND_NAME}
+            </Link>
+          </p>
+          <Link
+            href="/dashboard"
+            className="underline-offset-2 hover:underline hover:text-[var(--shop-primary)]"
+          >
+            {t("manageShop")}
           </Link>
-        </p>
+        </div>
       </div>
     </footer>
   );

@@ -67,8 +67,8 @@ export default async function ProductsPage({
       <DashboardHeader
         title={t("title")}
         actions={
-          <Link href="/dashboard/products/new">
-            <Button className="bg-[#E85A6B] hover:bg-[#D44558]">
+          <Link href="/dashboard/products/new" className="w-full sm:w-auto">
+            <Button className="w-full bg-[#E85A6B] hover:bg-[#D44558] sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               {tNav("addProduct")}
             </Button>
@@ -76,25 +76,25 @@ export default async function ProductsPage({
         }
       />
 
-      <div className="p-6 space-y-4">
-        <form className="flex flex-wrap gap-3">
+      <div className="p-4 sm:p-6 space-y-4">
+        <form className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <Input
             name="search"
             placeholder={tCommon("search")}
             defaultValue={search}
-            className="max-w-xs"
+            className="w-full sm:max-w-xs"
           />
           <select
             name="status"
             defaultValue={status}
-            className="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+            className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm sm:w-auto"
           >
             <option value="all">{tCommon("all")}</option>
             <option value="ACTIVE">{t("statuses.ACTIVE")}</option>
             <option value="INACTIVE">{t("statuses.INACTIVE")}</option>
             <option value="SOLD_OUT">{t("statuses.SOLD_OUT")}</option>
           </select>
-          <Button type="submit" variant="outline">
+          <Button type="submit" variant="outline" className="w-full sm:w-auto">
             {tCommon("filter")}
           </Button>
         </form>
@@ -109,7 +109,7 @@ export default async function ProductsPage({
             }
           />
         ) : (
-          <div className="rounded-lg border bg-white">
+          <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
             <Table>
               <TableHeader>
                 <TableRow>

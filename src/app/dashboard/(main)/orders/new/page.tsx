@@ -51,7 +51,7 @@ export default async function NewOrderPage() {
           </Link>
         }
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <ManualOrderForm
           shopId={shop.id}
           customers={customers}

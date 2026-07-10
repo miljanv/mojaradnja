@@ -32,7 +32,7 @@ export default async function NewExchangePage() {
           </Link>
         }
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <ExchangeForm
           shopId={shop.id}
           orders={orders.map((o) => ({

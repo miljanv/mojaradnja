@@ -123,10 +123,16 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
       <CardContent className="pt-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-6">
-              <TabsTrigger value="general">{t("tabGeneral")}</TabsTrigger>
-              <TabsTrigger value="design">{t("tabDesign")}</TabsTrigger>
-              <TabsTrigger value="policies">{t("tabPolicies")}</TabsTrigger>
+            <TabsList className="mb-6 h-auto w-full flex-wrap sm:w-fit">
+              <TabsTrigger value="general" className="flex-1 sm:flex-initial">
+                {t("tabGeneral")}
+              </TabsTrigger>
+              <TabsTrigger value="design" className="flex-1 sm:flex-initial">
+                {t("tabDesign")}
+              </TabsTrigger>
+              <TabsTrigger value="policies" className="flex-1 sm:flex-initial">
+                {t("tabPolicies")}
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="general" className="space-y-6 max-w-3xl" keepMounted>

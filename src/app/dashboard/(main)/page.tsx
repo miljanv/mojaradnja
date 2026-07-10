@@ -104,12 +104,14 @@ export default async function DashboardPage() {
       <DashboardHeader
         title={`${t("welcome")}, ${shop.name}! 👋`}
         actions={
-          <div className="flex gap-2">
-            <Link href={`/${shop.slug}`} target="_blank">
-              <Button variant="outline">{tNav("viewShop")}</Button>
+          <div className="flex w-full gap-2 sm:w-auto">
+            <Link href={`/${shop.slug}`} target="_blank" className="flex-1 sm:flex-initial">
+              <Button variant="outline" className="w-full sm:w-auto">
+                {tNav("viewShop")}
+              </Button>
             </Link>
-            <Link href="/dashboard/orders/new">
-              <Button className="bg-[#E85A6B] hover:bg-[#D44558]">
+            <Link href="/dashboard/orders/new" className="flex-1 sm:flex-initial">
+              <Button className="w-full bg-[#E85A6B] hover:bg-[#D44558] sm:w-auto">
                 {tNav("newOrder")}
               </Button>
             </Link>
@@ -117,7 +119,7 @@ export default async function DashboardPage() {
         }
       />
 
-      <div className="p-6 sm:p-8 space-y-8 max-w-7xl">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-7xl">
         {/* Primary KPIs — fewer, wider cards so money never overflows */}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard
