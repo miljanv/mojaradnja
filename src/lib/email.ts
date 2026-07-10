@@ -57,12 +57,12 @@ function buildOrderEmailHtml(params: NewOrderEmailParams): string {
 <!DOCTYPE html>
 <html>
 <body style="font-family:system-ui,sans-serif;color:#1e293b;max-width:560px;margin:0 auto;padding:24px;">
-  <div style="background:linear-gradient(135deg,#E91E8C,#f472b6);color:white;padding:24px;border-radius:12px 12px 0 0;">
+  <div style="background:linear-gradient(135deg,#E85A6B,#D44558);color:white;padding:24px;border-radius:12px 12px 0 0;">
     <h1 style="margin:0;font-size:20px;">Nova porudžbina 🛍️</h1>
     <p style="margin:8px 0 0;opacity:0.9;">${params.shopName}</p>
   </div>
   <div style="border:1px solid #e2e8f0;border-top:none;padding:24px;border-radius:0 0 12px 12px;">
-    <p style="font-size:18px;font-weight:bold;color:#E91E8C;margin-top:0;">${params.orderNumber}</p>
+    <p style="font-size:18px;font-weight:bold;color:#E85A6B;margin-top:0;">${params.orderNumber}</p>
     <p style="color:#64748b;margin:0 0 16px;">Izvor: <strong>${sourceLabel}</strong></p>
 
     <h2 style="font-size:14px;text-transform:uppercase;color:#64748b;letter-spacing:0.05em;">Kupac</h2>
@@ -89,7 +89,7 @@ function buildOrderEmailHtml(params: NewOrderEmailParams): string {
       Ukupno: ${formatCurrency(params.totalAmount)}
     </p>
 
-    <a href="${orderUrl}" style="display:inline-block;background:#E91E8C;color:white;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;margin-top:16px;">
+    <a href="${orderUrl}" style="display:inline-block;background:#E85A6B;color:white;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;margin-top:16px;">
       Otvori u dashboard-u
     </a>
   </div>
