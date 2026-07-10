@@ -29,7 +29,7 @@ export function ShopImageInput({
   hint,
   aspectClassName = "aspect-[21/9]",
   name = "coverImageUrl",
-  objectFit = "contain",
+  objectFit = "cover",
 }: ShopImageInputProps) {
   const t = useTranslations("shop");
   const tProducts = useTranslations("products");

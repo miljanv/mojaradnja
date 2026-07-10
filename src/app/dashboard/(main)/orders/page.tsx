@@ -74,7 +74,7 @@ export default async function OrdersPage({
               </Button>
             </a>
             <Link href="/dashboard/orders/new">
-              <Button className="bg-pink-500 hover:bg-pink-600">
+              <Button className="bg-[#E85A6B] hover:bg-[#D44558]">
                 <Plus className="h-4 w-4 mr-2" />
                 {tNav("newOrder")}
               </Button>
@@ -128,7 +128,7 @@ export default async function OrdersPage({
             title={tCommon("noResults")}
             action={
               <Link href="/dashboard/orders/new">
-                <Button className="bg-pink-500 hover:bg-pink-600">{t("new")}</Button>
+                <Button className="bg-[#E85A6B] hover:bg-[#D44558]">{t("new")}</Button>
               </Link>
             }
           />
@@ -149,7 +149,7 @@ export default async function OrdersPage({
                 {orders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell>
-                      <Link href={`/dashboard/orders/${order.id}`} className="text-pink-600 hover:underline font-medium">
+                      <Link href={`/dashboard/orders/${order.id}`} className="text-[#E85A6B] hover:underline font-medium">
                         {order.orderNumber}
                       </Link>
                     </TableCell>

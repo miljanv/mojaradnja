@@ -273,11 +273,6 @@ export function ManualOrderForm({
         <CardContent className="space-y-4">
           {items.map((item, i) => {
             const product = products.find((p) => p.id === item.productId);
-            const variantItems = product
-              ? Object.fromEntries(
-                  product.variants.map((v) => [v.id, getVariantDisplayValue(v)])
-                )
-              : {};
 
             return (
               <div key={i} className="grid gap-3 rounded-lg border p-4">
@@ -304,22 +299,21 @@ export function ManualOrderForm({
                   {product && product.variants.length > 0 && (
                     <div className="space-y-2">
                       <Label>Varijanta</Label>
-                      <Select
-                        value={item.variantId ?? null}
-                        onValueChange={(v) => v && selectVariant(i, v)}
-                        items={variantItems}
+                      <select
+                        className="flex h-9 w-full cursor-pointer rounded-lg border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                        value={item.variantId ?? ""}
+                        onChange={(e) => {
+                          if (e.target.value) selectVariant(i, e.target.value)
+                        }}
+                        required
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Izaberite varijantu" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {product.variants.map((v) => (
-                            <SelectItem key={v.id} value={v.id}>
-                              {getVariantDisplayValue(v)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        <option value="">Izaberite varijantu</option>
+                        {product.variants.map((v) => (
+                          <option key={v.id} value={v.id}>
+                            {getVariantDisplayValue(v)}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   )}
                 </div>
@@ -416,7 +410,7 @@ export function ManualOrderForm({
         </CardContent>
       </Card>
 
-      <Button type="submit" className="bg-pink-500 hover:bg-pink-600" disabled={pending}>
+      <Button type="submit" className="bg-[#E85A6B] hover:bg-[#D44558]" disabled={pending}>
         {t("manualOrder")}
       </Button>
     </form>

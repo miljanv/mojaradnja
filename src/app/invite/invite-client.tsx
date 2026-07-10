@@ -71,7 +71,7 @@ export default function InviteAcceptClient() {
         </p>
         <div className="mt-6 flex flex-col gap-2">
           <Button
-            className="bg-pink-500 hover:bg-pink-600"
+            className="bg-[#E85A6B] hover:bg-[#D44558]"
             disabled={busy}
             onClick={continueAsNewUser}
           >

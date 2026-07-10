@@ -62,6 +62,39 @@ export const BACKGROUND_PRESETS = [
 
 export type VariantAttribute = { label: string; value: string };
 
+function collectVariantAttributes(variant: {
+  size?: string | null;
+  color?: string | null;
+  optionLabel?: string | null;
+  optionValue?: string | null;
+  attributes?: unknown;
+}): VariantAttribute[] {
+  const attrs: VariantAttribute[] = [];
+  const seen = new Set<string>();
+
+  function push(label: string, value: string) {
+    const key = `${label.trim().toLowerCase()}::${value.trim().toLowerCase()}`;
+    if (!label.trim() || !value.trim() || seen.has(key)) return;
+    seen.add(key);
+    attrs.push({ label: label.trim(), value: value.trim() });
+  }
+
+  if (variant.attributes && Array.isArray(variant.attributes)) {
+    for (const a of variant.attributes as VariantAttribute[]) {
+      if (a?.label && a?.value) push(a.label, a.value);
+    }
+  }
+
+  // Legacy columns — only if not already present in attributes JSON
+  if (variant.optionLabel && variant.optionValue) {
+    push(variant.optionLabel, variant.optionValue);
+  }
+  if (variant.size) push("Veličina", variant.size);
+  if (variant.color) push("Boja", variant.color);
+
+  return attrs;
+}
+
 export function formatVariantAttributes(
   variant: {
     size?: string | null;
@@ -72,22 +105,9 @@ export function formatVariantAttributes(
   } | null | undefined
 ): string {
   if (!variant) return "";
-
-  const attrs: VariantAttribute[] = [];
-
-  if (variant.attributes && Array.isArray(variant.attributes)) {
-    for (const a of variant.attributes as VariantAttribute[]) {
-      if (a?.label && a?.value) attrs.push(a);
-    }
-  }
-
-  if (variant.optionLabel && variant.optionValue) {
-    attrs.push({ label: variant.optionLabel, value: variant.optionValue });
-  }
-  if (variant.size) attrs.push({ label: "Veličina", value: variant.size });
-  if (variant.color) attrs.push({ label: "Boja", value: variant.color });
-
-  return attrs.map((a) => `${a.label}: ${a.value}`).join(" · ");
+  return collectVariantAttributes(variant)
+    .map((a) => `${a.label}: ${a.value}`)
+    .join(" · ");
 }
 
 export function getVariantDisplayValue(variant: {
@@ -97,8 +117,13 @@ export function getVariantDisplayValue(variant: {
   color?: string | null;
   attributes?: unknown;
 }): string {
-  const formatted = formatVariantAttributes(variant);
-  return formatted || "Standard";
+  const attrs = collectVariantAttributes(variant);
+  if (attrs.length === 0) return "Standard";
+  // Short label for selects: prefer value when single attr, else "label: value"
+  if (attrs.length === 1) {
+    return attrs[0].value;
+  }
+  return attrs.map((a) => a.value).join(" / ");
 }
 
 const FONT_CSS: Record<ShopFontId, string> = {
@@ -163,20 +188,64 @@ export function parseVariantAttributesFromDb(v: {
   optionValue?: string | null;
   attributes?: unknown;
 }): VariantAttribute[] {
-  const attrs: VariantAttribute[] = [];
-
-  if (v.attributes && Array.isArray(v.attributes)) {
-    for (const a of v.attributes as VariantAttribute[]) {
-      if (a?.label || a?.value) attrs.push({ label: a.label ?? "", value: a.value ?? "" });
-    }
-  }
-  if (v.optionLabel || v.optionValue) {
-    attrs.push({ label: v.optionLabel ?? "", value: v.optionValue ?? "" });
-  }
-  if (v.size) attrs.push({ label: "Veličina", value: v.size });
-  if (v.color) attrs.push({ label: "Boja", value: v.color });
-
+  const attrs = collectVariantAttributes(v);
   return attrs.length ? attrs : [{ label: "", value: "" }];
+}
+
+/**
+ * If a single variant row stores multiple values of the same attribute
+ * (e.g. Zapremina 1L + 500ml), treat them as separate variants.
+ */
+export function expandCollapsedVariants<
+  T extends {
+    id?: string;
+    attributes?: VariantAttribute[] | unknown;
+    optionLabel?: string | null;
+    optionValue?: string | null;
+    size?: string | null;
+    color?: string | null;
+  },
+>(variants: T[]): Array<Omit<T, "attributes" | "id"> & { id?: string; attributes: VariantAttribute[] }> {
+  return variants.flatMap((variant) => {
+    const attrs = collectVariantAttributes(variant);
+    if (attrs.length <= 1) {
+      return [
+        {
+          ...variant,
+          id: variant.id,
+          attributes: attrs.length ? attrs : [{ label: "", value: "" }],
+        },
+      ];
+    }
+
+    const labels = new Set(attrs.map((a) => a.label.toLowerCase()));
+    if (labels.size !== 1) {
+      return [{ ...variant, id: variant.id, attributes: attrs }];
+    }
+
+    return attrs.map((attr) => ({
+      ...variant,
+      // Force new DB rows on next save for split copies
+      id: undefined,
+      attributes: [attr],
+      optionLabel: attr.label,
+      optionValue: attr.value,
+      size: null,
+      color: null,
+    }));
+  });
+}
+
+export function variantNeedsExpand(variant: {
+  attributes?: unknown;
+  optionLabel?: string | null;
+  optionValue?: string | null;
+  size?: string | null;
+  color?: string | null;
+}): boolean {
+  const attrs = collectVariantAttributes(variant);
+  if (attrs.length <= 1) return false;
+  return new Set(attrs.map((a) => a.label.toLowerCase())).size === 1;
 }
 
 export function getProductCardColor(index: number, fallback: string): string {

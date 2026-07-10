@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requireShop } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { repairCollapsedVariants } from "@/lib/actions/products";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { ManualOrderForm } from "./manual-order-form";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ export default async function NewOrderPage() {
   const t = await getTranslations("orders");
   const tCommon = await getTranslations("common");
 
-  const [customers, products] = await Promise.all([
+  let [customers, products] = await Promise.all([
     prisma.customer.findMany({
       where: { shopId: shop.id },
       orderBy: { fullName: "asc" },
@@ -23,6 +24,19 @@ export default async function NewOrderPage() {
       orderBy: { name: "asc" },
     }),
   ]);
+
+  // Auto-fix variants that were saved as one row with multiple same-label values
+  let repaired = false;
+  for (const product of products) {
+    if (await repairCollapsedVariants(product.id)) repaired = true;
+  }
+  if (repaired) {
+    products = await prisma.product.findMany({
+      where: { shopId: shop.id, status: "ACTIVE" },
+      include: { variants: true },
+      orderBy: { name: "asc" },
+    });
+  }
 
   return (
     <div>

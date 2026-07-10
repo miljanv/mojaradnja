@@ -1,5 +1,4 @@
 import { requireShop } from "@/lib/auth";
-import { isClerkAdmin } from "@/lib/admin";
 import { getDaysRemaining, hasActiveSubscription } from "@/lib/subscription";
 import { prisma } from "@/lib/db";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
@@ -12,7 +11,6 @@ export default async function DashboardMainLayout({
   children: React.ReactNode;
 }) {
   const { user, shop, impersonating, impersonatedOwner } = await requireShop();
-  const admin = await isClerkAdmin();
 
   const [newOrders, exchanges, complaints] = await Promise.all([
     prisma.order.count({ where: { shopId: shop.id, status: "NEW" } }),
@@ -35,12 +33,11 @@ export default async function DashboardMainLayout({
       : null;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50">
+    <div className="flex h-screen overflow-hidden bg-[#FDF8F5]">
       <DashboardSidebar
         shopSlug={shop.slug}
         shopName={shop.name}
         counts={{ newOrders, exchanges, complaints }}
-        isAdmin={admin}
         impersonating={!!impersonating}
       />
       <main className="flex-1 overflow-y-auto">

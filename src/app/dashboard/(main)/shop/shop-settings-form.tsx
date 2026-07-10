@@ -191,7 +191,7 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
                     label={t("cover")}
                     value={coverImageUrl}
                     onChange={setCoverImageUrl}
-                    objectFit="contain"
+                    objectFit="cover"
                   />
 
                   <div className="space-y-2">
@@ -255,7 +255,7 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
                           onClick={() => setBackgroundColor(color)}
                           className={cn(
                             "h-10 w-10 rounded-full border-2 transition-transform hover:scale-110",
-                            backgroundColor === color ? "border-pink-500 ring-2 ring-pink-200" : "border-transparent"
+                            backgroundColor === color ? "border-[#E85A6B] ring-2 ring-[#E85A6B]/30" : "border-transparent"
                           )}
                           style={{ backgroundColor: color }}
                           title={color}
@@ -275,7 +275,7 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
                           onClick={() => setCardColor(color)}
                           className={cn(
                             "h-10 w-10 rounded-full border-2 transition-transform hover:scale-110",
-                            cardColor === color ? "border-pink-500 ring-2 ring-pink-200" : "border-transparent"
+                            cardColor === color ? "border-[#E85A6B] ring-2 ring-[#E85A6B]/30" : "border-transparent"
                           )}
                           style={{ backgroundColor: color }}
                           title={color}
@@ -316,7 +316,7 @@ export function ShopSettingsForm({ shop }: { shop: Shop }) {
             </TabsContent>
           </Tabs>
 
-          <Button type="submit" className="bg-pink-500 hover:bg-pink-600" disabled={pending}>
+          <Button type="submit" className="bg-[#E85A6B] hover:bg-[#D44558]" disabled={pending}>
             {tCommon("save")}
           </Button>
         </form>

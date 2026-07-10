@@ -27,7 +27,7 @@ export default async function SubscriptionExpiredPage() {
         <p className="mt-3 text-slate-600">{t("expiredDesc")}</p>
         <div className="mt-6 flex flex-col gap-2">
           <a href="mailto:support@mojshop.app">
-            <Button className="w-full bg-pink-500 hover:bg-pink-600">
+            <Button className="w-full bg-[#E85A6B] hover:bg-[#D44558]">
               {t("contactSupport")}
             </Button>
           </a>

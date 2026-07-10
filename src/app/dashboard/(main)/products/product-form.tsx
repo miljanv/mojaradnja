@@ -4,7 +4,12 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { createProduct, updateProduct } from "@/lib/actions/products";
-import { VARIANT_PRESETS, parseVariantAttributesFromDb, type VariantAttribute } from "@/lib/shop-theme";
+import {
+  VARIANT_PRESETS,
+  expandCollapsedVariants,
+  parseVariantAttributesFromDb,
+  type VariantAttribute,
+} from "@/lib/shop-theme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,7 +55,7 @@ const emptyAttribute = (): VariantAttribute => ({ label: "", value: "" });
 const emptyVariant = (): Variant => ({
   attributes: [emptyAttribute()],
   sku: "",
-  stock: 0,
+  stock: 100,
   isAvailable: true,
 });
 
@@ -115,9 +120,16 @@ export function ProductForm({
     product?.category && !categories.includes(product.category) ? product.category : ""
   );
   const [images, setImages] = useState<string[]>(product?.images ?? []);
-  const [variants, setVariants] = useState<Variant[]>(
-    product?.variants.length ? product.variants : [emptyVariant()]
-  );
+  const [variants, setVariants] = useState<Variant[]>(() => {
+    if (!product?.variants.length) return [emptyVariant()];
+    return expandCollapsedVariants(product.variants).map((v) => ({
+      ...v,
+      attributes: v.attributes.length ? v.attributes : [emptyAttribute()],
+      sku: v.sku ?? "",
+      stock: v.stock,
+      isAvailable: v.isAvailable,
+    }));
+  });
 
   function addVariant() {
     setVariants([...variants, emptyVariant()]);
@@ -454,7 +466,7 @@ export function ProductForm({
       </Card>
 
       <div className="flex gap-3">
-        <Button type="submit" className="bg-pink-500 hover:bg-pink-600" disabled={pending}>
+        <Button type="submit" className="bg-[#E85A6B] hover:bg-[#D44558]" disabled={pending}>
           {isEdit ? tCommon("update") : tCommon("create")}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.back()}>

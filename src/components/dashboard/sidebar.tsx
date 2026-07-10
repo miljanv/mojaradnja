@@ -14,7 +14,6 @@ import {
   Settings,
   Store,
   LogOut,
-  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +23,6 @@ import { SignOutButton } from "@clerk/nextjs";
 type SidebarProps = {
   shopSlug?: string;
   shopName?: string;
-  isAdmin?: boolean;
   impersonating?: boolean;
   counts?: {
     newOrders?: number;
@@ -48,19 +46,18 @@ export function DashboardSidebar({
   shopSlug,
   shopName,
   counts,
-  isAdmin,
   impersonating,
 }: SidebarProps) {
   const pathname = usePathname();
   const t = useTranslations("nav");
 
   return (
-    <aside className="flex h-full w-64 flex-col bg-slate-900 text-white">
-      <div className="border-b border-slate-700 p-6">
+    <aside className="flex h-full w-64 flex-col bg-[#111111] text-white">
+      <div className="border-b border-white/10 p-6">
         <Link href="/dashboard" className="block min-w-0">
-          <BrandLogo variant="light" iconClassName="h-5 w-5" />
+          <BrandLogo variant="light" iconClassName="h-8 w-8 rounded-lg" />
           {shopName && (
-            <span className="mt-1.5 block truncate text-xs text-slate-400">
+            <span className="mt-1.5 block truncate text-xs text-white/50">
               {shopName}
             </span>
           )}
@@ -73,15 +70,6 @@ export function DashboardSidebar({
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
-        {isAdmin && (
-          <Link
-            href="/admin"
-            className="mb-2 flex items-center gap-3 rounded-lg bg-rose-500/15 px-3 py-2.5 text-sm text-rose-300 transition-colors hover:bg-rose-500/25"
-          >
-            <Shield className="h-4 w-4 shrink-0" />
-            <span className="flex-1">Admin</span>
-          </Link>
-        )}
         {navItems.map((item) => {
           const isActive =
             item.href === "/dashboard"
@@ -96,14 +84,14 @@ export function DashboardSidebar({
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
                 isActive
-                  ? "bg-pink-500/20 text-pink-300"
-                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  ? "bg-[#E85A6B]/20 text-[#E85A6B]"
+                  : "text-white/70 hover:bg-white/5 hover:text-white"
               )}
             >
               <item.icon className="h-4 w-4 shrink-0" />
               <span className="flex-1">{t(item.labelKey)}</span>
               {count != null && count > 0 && (
-                <Badge className="bg-pink-500 text-white hover:bg-pink-500">
+                <Badge className="bg-[#E85A6B] text-white hover:bg-[#E85A6B]">
                   {count}
                 </Badge>
               )}
@@ -112,19 +100,19 @@ export function DashboardSidebar({
         })}
       </nav>
 
-      <div className="space-y-2 border-t border-slate-700 p-4">
+      <div className="space-y-2 border-t border-white/10 p-4">
         {shopSlug && (
           <Link
             href={`/${shopSlug}`}
             target="_blank"
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/70 hover:bg-white/5 hover:text-white"
           >
             <Store className="h-4 w-4" />
             {t("viewShop")}
           </Link>
         )}
         <SignOutButton>
-          <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white">
+          <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/70 hover:bg-white/5 hover:text-white">
             <LogOut className="h-4 w-4" />
             {t("logout")}
           </button>

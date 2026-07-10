@@ -63,7 +63,7 @@ export default async function ComplaintsPage({
         title={t("title")}
         actions={
           <Link href="/dashboard/complaints/new">
-            <Button className="bg-pink-500 hover:bg-pink-600">
+            <Button className="bg-[#E85A6B] hover:bg-[#D44558]">
               <Plus className="h-4 w-4 mr-2" />
               {t("new")}
             </Button>
@@ -97,7 +97,7 @@ export default async function ComplaintsPage({
             title={tCommon("noResults")}
             action={
               <Link href="/dashboard/complaints/new">
-                <Button className="bg-pink-500 hover:bg-pink-600">{t("new")}</Button>
+                <Button className="bg-[#E85A6B] hover:bg-[#D44558]">{t("new")}</Button>
               </Link>
             }
           />
@@ -118,13 +118,13 @@ export default async function ComplaintsPage({
                   <TableRow key={c.id}>
                     <TableCell className="font-medium">{c.reason}</TableCell>
                     <TableCell>
-                      <Link href={`/dashboard/customers/${c.customer.id}`} className="text-pink-600 hover:underline">
+                      <Link href={`/dashboard/customers/${c.customer.id}`} className="text-[#E85A6B] hover:underline">
                         {c.customer.fullName}
                       </Link>
                     </TableCell>
                     <TableCell>
                       {c.order ? (
-                        <Link href={`/dashboard/orders/${c.order.id}`} className="text-pink-600 hover:underline">
+                        <Link href={`/dashboard/orders/${c.order.id}`} className="text-[#E85A6B] hover:underline">
                           {c.order.orderNumber}
                         </Link>
                       ) : "—"}

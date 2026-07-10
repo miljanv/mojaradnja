@@ -72,7 +72,7 @@ export function AdminCreateUserForm() {
               placeholder="Opciono — generiše se automatski"
             />
           </div>
-          <Button type="submit" disabled={pending} className="bg-pink-500 hover:bg-pink-600">
+          <Button type="submit" disabled={pending} className="bg-[#E85A6B] hover:bg-[#D44558]">
             {t("createUser")}
           </Button>
         </form>

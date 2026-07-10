@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { getPublishedShop } from "@/lib/shop-public";
+import { repairCollapsedVariants } from "@/lib/actions/products";
 import { ShopProductGrid, type ShopProduct } from "./shop-product-grid";
 
 type PageProps = {
@@ -67,7 +68,7 @@ export default async function ShopHomePage({ params }: PageProps) {
 
   const t = await getTranslations("publicShop");
 
-  const products = await prisma.product.findMany({
+  let products = await prisma.product.findMany({
     where: { shopId: shop.id, status: { in: ["ACTIVE", "SOLD_OUT"] } },
     include: {
       images: { orderBy: { sortOrder: "asc" }, take: 1 },
@@ -75,6 +76,21 @@ export default async function ShopHomePage({ params }: PageProps) {
     },
     orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
   });
+
+  let repaired = false;
+  for (const product of products) {
+    if (await repairCollapsedVariants(product.id)) repaired = true;
+  }
+  if (repaired) {
+    products = await prisma.product.findMany({
+      where: { shopId: shop.id, status: { in: ["ACTIVE", "SOLD_OUT"] } },
+      include: {
+        images: { orderBy: { sortOrder: "asc" }, take: 1 },
+        variants: { orderBy: { createdAt: "asc" } },
+      },
+      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+    });
+  }
 
   const mappedProducts = products.map(mapProduct);
   const featuredProducts = mappedProducts.filter(
@@ -87,13 +103,13 @@ export default async function ShopHomePage({ params }: PageProps) {
   return (
     <div>
       <section className="relative">
-        <div className="relative min-h-[52vh] w-full overflow-hidden bg-slate-900 sm:min-h-[58vh]">
+        <div className="relative min-h-[52vh] w-full overflow-hidden sm:min-h-[58vh]">
           {shop.coverImageUrl ? (
             <Image
               src={shop.coverImageUrl}
               alt={shop.name}
               fill
-              className="object-contain"
+              className="object-cover"
               priority
               unoptimized
             />

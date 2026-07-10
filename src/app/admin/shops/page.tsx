@@ -52,7 +52,7 @@ export default async function AdminShopsPage() {
                 <TableCell>
                   <Link
                     href={`/admin/users/${shop.ownerId}`}
-                    className="text-pink-600 hover:underline"
+                    className="text-[#E85A6B] hover:underline"
                   >
                     {shop.owner.email}
                   </Link>

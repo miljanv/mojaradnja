@@ -49,7 +49,7 @@ export default async function AdminUserDetailPage({ params }: { params: Params }
     <div className="space-y-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <Link href="/admin/users" className="text-sm text-pink-600 hover:underline">
+          <Link href="/admin/users" className="text-sm text-[#E85A6B] hover:underline">
             ← {t("users")}
           </Link>
           <h1 className="mt-2 text-2xl font-bold">{user.email}</h1>

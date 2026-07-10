@@ -39,10 +39,10 @@ export function OnboardingForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
-      <Card className="w-full max-w-lg">
+    <div className="flex min-h-screen items-center justify-center bg-[#FDF8F5] p-4">
+      <Card className="w-full max-w-lg border-[#EDE4DC] shadow-sm">
         <CardHeader className="text-center">
-          <BrandLogo className="mx-auto mb-4 justify-center" iconClassName="h-6 w-6" />
+          <BrandLogo className="mx-auto mb-4 justify-center" iconClassName="h-10 w-10 rounded-xl" />
           <CardTitle className="text-2xl">{t("title")}</CardTitle>
           <CardDescription>{t("subtitle")}</CardDescription>
         </CardHeader>
@@ -69,7 +69,7 @@ export function OnboardingForm() {
             </div>
             <Button
               type="submit"
-              className="w-full bg-pink-500 hover:bg-pink-600"
+              className="w-full bg-[#E85A6B] hover:bg-[#D44558]"
               disabled={pending}
             >
               {t("createShop")}

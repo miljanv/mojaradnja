@@ -1,37 +1,67 @@
 "use client"
 
-import { Switch as SwitchPrimitive } from "@base-ui/react/switch"
-
+import * as React from "react"
 import { cn } from "@/lib/utils"
 
+type SwitchProps = {
+  id?: string
+  checked?: boolean
+  defaultChecked?: boolean
+  onCheckedChange?: (checked: boolean) => void
+  disabled?: boolean
+  className?: string
+  size?: "sm" | "default"
+  name?: string
+}
+
 function Switch({
+  id,
+  checked: checkedProp,
+  defaultChecked = false,
+  onCheckedChange,
+  disabled,
   className,
   size = "default",
-  ...props
-}: SwitchPrimitive.Root.Props & {
-  size?: "sm" | "default"
-}) {
+  name,
+}: SwitchProps) {
+  const [uncontrolled, setUncontrolled] = React.useState(defaultChecked)
+  const checked = checkedProp ?? uncontrolled
+
+  function toggle() {
+    if (disabled) return
+    const next = !checked
+    if (checkedProp === undefined) setUncontrolled(next)
+    onCheckedChange?.(next)
+  }
+
   return (
-    <SwitchPrimitive.Root
-      data-slot="switch"
-      data-size={size}
+    <button
+      id={id}
+      type="button"
+      role="switch"
+      name={name}
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={toggle}
       className={cn(
-        "peer relative inline-flex shrink-0 cursor-pointer items-center rounded-full border border-transparent transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-checked:bg-primary data-unchecked:bg-input",
-        size === "default" && "h-5 w-9",
-        size === "sm" && "h-4 w-7",
+        "relative inline-flex shrink-0 cursor-pointer items-center rounded-full transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50",
+        checked ? "bg-primary" : "bg-input",
+        size === "default" ? "h-5 w-9" : "h-4 w-7",
         className
       )}
-      {...props}
     >
-      <SwitchPrimitive.Thumb
-        data-slot="switch-thumb"
+      <span
         className={cn(
-          "pointer-events-none block rounded-full bg-background shadow-sm ring-0 transition-transform",
-          size === "default" && "size-4 data-checked:translate-x-4 data-unchecked:translate-x-0.5",
-          size === "sm" && "size-3 data-checked:translate-x-3 data-unchecked:translate-x-0.5"
+          "pointer-events-none block rounded-full bg-white shadow-sm transition-transform duration-200",
+          size === "default" ? "size-4" : "size-3",
+          checked
+            ? size === "default"
+              ? "translate-x-[18px]"
+              : "translate-x-[14px]"
+            : "translate-x-0.5"
         )}
       />
-    </SwitchPrimitive.Root>
+    </button>
   )
 }
 

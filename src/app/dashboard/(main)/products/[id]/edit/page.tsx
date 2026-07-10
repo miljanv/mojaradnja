@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { parseVariantAttributesFromDb } from "@/lib/shop-theme";
 import { getShopProductCategories } from "@/lib/shop-categories";
+import { repairCollapsedVariants } from "@/lib/actions/products";
 
 type Params = Promise<{ id: string }>;
 
@@ -17,6 +18,8 @@ export default async function EditProductPage({ params }: { params: Params }) {
   const { id } = await params;
   const t = await getTranslations("products");
   const tCommon = await getTranslations("common");
+
+  await repairCollapsedVariants(id);
 
   const product = await prisma.product.findFirst({
     where: { id, shopId: shop.id },

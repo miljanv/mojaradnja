@@ -95,7 +95,7 @@ export default async function CustomersPage({
                   return (
                     <TableRow key={customer.id}>
                       <TableCell>
-                        <Link href={`/dashboard/customers/${customer.id}`} className="text-pink-600 hover:underline font-medium">
+                        <Link href={`/dashboard/customers/${customer.id}`} className="text-[#E85A6B] hover:underline font-medium">
                           {customer.fullName}
                         </Link>
                       </TableCell>

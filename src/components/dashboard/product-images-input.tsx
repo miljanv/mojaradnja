@@ -131,7 +131,7 @@ export function ProductImagesInput({
                 }}
                 appearance={{
                   button:
-                    "bg-pink-500 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-pink-600 transition-colors ut-ready:bg-pink-500 ut-uploading:bg-pink-400",
+                    "bg-[#E85A6B] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#D44558] transition-colors ut-ready:bg-[#E85A6B] ut-uploading:bg-[#E85A6B]/80",
                   allowedContent: "text-xs text-muted-foreground mt-2",
                 }}
                 content={{

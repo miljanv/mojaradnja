@@ -70,7 +70,7 @@ export function ShopDesignPreview({
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-muted-foreground">{t("livePreview")}</p>
-        <span className="rounded-full bg-pink-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pink-600">
+        <span className="rounded-full bg-[#E85A6B]/12 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#E85A6B]">
           Live
         </span>
       </div>
@@ -105,13 +105,13 @@ export function ShopDesignPreview({
           <ShoppingBag className="h-4 w-4" />
         </header>
 
-        <div className="relative min-h-[150px] bg-slate-900">
+        <div className="relative min-h-[150px]">
           {coverImageUrl ? (
             <Image
               src={coverImageUrl}
               alt=""
               fill
-              className="object-contain"
+              className="object-cover"
               unoptimized
             />
           ) : (

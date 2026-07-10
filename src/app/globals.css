@@ -48,38 +48,41 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.62 0.24 350);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: #FDF8F5;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --primary: #E85A6B;
+  --primary-foreground: #ffffff;
+  --secondary: #F7F0EA;
+  --secondary-foreground: #111111;
+  --muted: #F7F0EA;
+  --muted-foreground: #6B7280;
+  --accent: #F7F0EA;
+  --accent-foreground: #111111;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --border: #EDE4DC;
+  --input: #EDE4DC;
+  --ring: #E85A6B;
+  --chart-1: #E85A6B;
+  --chart-2: #111111;
+  --chart-3: #F7F0EA;
+  --chart-4: #D44558;
+  --chart-5: #6B7280;
+  --radius: 0.75rem;
+  --sidebar: #111111;
+  --sidebar-foreground: #FDF8F5;
+  --sidebar-primary: #E85A6B;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1C1C1C;
+  --sidebar-accent-foreground: #FDF8F5;
+  --sidebar-border: #2A2A2A;
+  --sidebar-ring: #E85A6B;
+  --brand-cream: #FDF8F5;
+  --brand-coral: #E85A6B;
+  --brand-ink: #111111;
 }
 
 .dark {

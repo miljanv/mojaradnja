@@ -7,7 +7,11 @@ import { slugify } from "@/lib/utils-app";
 import { ensureShopCategory } from "@/lib/actions/categories";
 import type { ProductStatus } from "@/lib/prisma-client";
 import type { ActionResult } from "./shop";
-import type { VariantAttribute } from "@/lib/shop-theme";
+import {
+  expandCollapsedVariants,
+  variantNeedsExpand,
+  type VariantAttribute,
+} from "@/lib/shop-theme";
 
 type VariantInput = {
   id?: string;
@@ -21,20 +25,65 @@ type VariantInput = {
   isAvailable: boolean;
 };
 
+function expandVariantInputs(variants: VariantInput[]): VariantInput[] {
+  return expandCollapsedVariants(
+    variants.map((v) => ({
+      ...v,
+      attributes: v.attributes?.filter((a) => a.label?.trim() && a.value?.trim()) ?? [],
+    }))
+  ).map((v) => ({
+    ...v,
+    attributes: (v.attributes as VariantAttribute[]).filter(
+      (a) => a.label?.trim() && a.value?.trim()
+    ),
+  }));
+}
+
 function mapVariantToDb(v: VariantInput) {
   const attrs = v.attributes?.filter((a) => a.label && a.value) ?? [];
   const primary = attrs[0];
 
   return {
-    size: v.size || undefined,
-    color: v.color || undefined,
-    optionLabel: primary?.label ?? v.optionLabel,
-    optionValue: primary?.value ?? v.optionValue,
+    size: undefined,
+    color: undefined,
+    optionLabel: primary?.label ?? v.optionLabel ?? undefined,
+    optionValue: primary?.value ?? v.optionValue ?? undefined,
     attributes: attrs.length ? attrs : undefined,
     sku: v.sku || undefined,
     stock: v.stock,
     isAvailable: v.isAvailable,
   };
+}
+
+/** Fix products where multiple option values were saved as one variant. */
+export async function repairCollapsedVariants(productId: string): Promise<boolean> {
+  const variants = await prisma.productVariant.findMany({ where: { productId } });
+  if (!variants.some(variantNeedsExpand)) return false;
+
+  const expanded = expandVariantInputs(
+    variants.map((v) => ({
+      attributes: Array.isArray(v.attributes)
+        ? (v.attributes as VariantAttribute[])
+        : [],
+      optionLabel: v.optionLabel ?? undefined,
+      optionValue: v.optionValue ?? undefined,
+      size: v.size ?? undefined,
+      color: v.color ?? undefined,
+      sku: v.sku ?? undefined,
+      stock: v.stock,
+      isAvailable: v.isAvailable,
+    }))
+  );
+
+  await prisma.productVariant.deleteMany({ where: { productId } });
+  await prisma.productVariant.createMany({
+    data: expanded.map((v) => ({
+      productId,
+      ...mapVariantToDb(v),
+    })),
+  });
+
+  return true;
 }
 
 export async function createProduct(
@@ -80,8 +129,8 @@ export async function createProduct(
         },
         variants: {
           create: data.variants.length
-            ? data.variants.map(mapVariantToDb)
-            : [{ stock: 0, isAvailable: true }],
+            ? expandVariantInputs(data.variants).map(mapVariantToDb)
+            : [{ stock: 100, isAvailable: true }],
         },
       },
     });
@@ -125,7 +174,7 @@ export async function updateProduct(
     if (data.variants) {
       await prisma.productVariant.deleteMany({ where: { productId } });
       await prisma.productVariant.createMany({
-        data: data.variants.map((v) => ({
+        data: expandVariantInputs(data.variants).map((v) => ({
           productId,
           ...mapVariantToDb(v),
         })),

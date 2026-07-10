@@ -67,7 +67,7 @@ export default async function ProductsPage({
         title={t("title")}
         actions={
           <Link href="/dashboard/products/new">
-            <Button className="bg-pink-500 hover:bg-pink-600">
+            <Button className="bg-[#E85A6B] hover:bg-[#D44558]">
               <Plus className="h-4 w-4 mr-2" />
               {tNav("addProduct")}
             </Button>
@@ -103,7 +103,7 @@ export default async function ProductsPage({
             title={tCommon("noResults")}
             action={
               <Link href="/dashboard/products/new">
-                <Button className="bg-pink-500 hover:bg-pink-600">{t("add")}</Button>
+                <Button className="bg-[#E85A6B] hover:bg-[#D44558]">{t("add")}</Button>
               </Link>
             }
           />

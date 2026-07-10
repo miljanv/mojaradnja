@@ -97,13 +97,13 @@ export default async function ExchangeDetailPage({ params }: { params: Params })
               <StatusBadge status={exchange.status} type="exchange" />
               <p className="text-sm">
                 {tOrders("customer")}:{" "}
-                <Link href={`/dashboard/customers/${exchange.customer.id}`} className="text-pink-600 hover:underline">
+                <Link href={`/dashboard/customers/${exchange.customer.id}`} className="text-[#E85A6B] hover:underline">
                   {exchange.customer.fullName}
                 </Link>
               </p>
               <p className="text-sm">
                 {tOrders("orderNumber")}:{" "}
-                <Link href={`/dashboard/orders/${exchange.order.id}`} className="text-pink-600 hover:underline">
+                <Link href={`/dashboard/orders/${exchange.order.id}`} className="text-[#E85A6B] hover:underline">
                   {exchange.order.orderNumber}
                 </Link>
               </p>

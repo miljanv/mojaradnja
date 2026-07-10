@@ -149,7 +149,7 @@ export function ComplaintForm({
         </CardContent>
       </Card>
 
-      <Button type="submit" className="bg-pink-500 hover:bg-pink-600" disabled={pending}>
+      <Button type="submit" className="bg-[#E85A6B] hover:bg-[#D44558]" disabled={pending}>
         {t("new")}
       </Button>
     </form>

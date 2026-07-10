@@ -15,7 +15,7 @@ type StatCardProps = {
 };
 
 const accentStyles = {
-  pink: "border-pink-100 bg-gradient-to-br from-pink-50 to-white",
+  pink: "border-[#E85A6B]/20 bg-gradient-to-br from-[#E85A6B]/5 to-white",
   blue: "border-sky-100 bg-gradient-to-br from-sky-50 to-white",
   green: "border-emerald-100 bg-gradient-to-br from-emerald-50 to-white",
   amber: "border-amber-100 bg-gradient-to-br from-amber-50 to-white",
@@ -24,7 +24,7 @@ const accentStyles = {
 };
 
 const iconStyles = {
-  pink: "bg-pink-100 text-pink-600",
+  pink: "bg-[#E85A6B]/12 text-[#E85A6B]",
   blue: "bg-sky-100 text-sky-600",
   green: "bg-emerald-100 text-emerald-600",
   amber: "bg-amber-100 text-amber-600",

@@ -145,7 +145,7 @@ export default async function CustomerDetailPage({ params }: { params: Params })
                       {customer.orders.map((order) => (
                         <TableRow key={order.id}>
                           <TableCell>
-                            <Link href={`/dashboard/orders/${order.id}`} className="text-pink-600 hover:underline">
+                            <Link href={`/dashboard/orders/${order.id}`} className="text-[#E85A6B] hover:underline">
                               {order.orderNumber}
                             </Link>
                           </TableCell>
@@ -180,7 +180,7 @@ export default async function CustomerDetailPage({ params }: { params: Params })
                       {customer.exchangeRequests.map((ex) => (
                         <TableRow key={ex.id}>
                           <TableCell>
-                            <Link href={`/dashboard/exchanges/${ex.id}`} className="text-pink-600 hover:underline">
+                            <Link href={`/dashboard/exchanges/${ex.id}`} className="text-[#E85A6B] hover:underline">
                               {ex.originalProductName}
                             </Link>
                           </TableCell>

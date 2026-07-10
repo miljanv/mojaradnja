@@ -28,11 +28,11 @@ export default async function ShopLayout({ children, params }: LayoutProps) {
         <div className="absolute top-4 right-4">
           <LanguageSwitcher />
         </div>
-        <Store className="h-12 w-12 text-pink-500 mb-4" />
+        <Store className="h-12 w-12 text-[#E85A6B] mb-4" />
         <h1 className="text-2xl font-bold text-slate-900">{shop.name}</h1>
         <p className="mt-2 text-slate-500 text-center max-w-md">{t("shopUnpublished")}</p>
         <Link href="/dashboard/shop" className="mt-6">
-          <Button className="bg-pink-500 hover:bg-pink-600">{t("publishShop")}</Button>
+          <Button className="bg-[#E85A6B] hover:bg-[#D44558]">{t("publishShop")}</Button>
         </Link>
       </div>
     );

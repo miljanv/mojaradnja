@@ -109,7 +109,7 @@ export default async function DashboardPage() {
               <Button variant="outline">{tNav("viewShop")}</Button>
             </Link>
             <Link href="/dashboard/orders/new">
-              <Button className="bg-pink-500 hover:bg-pink-600">
+              <Button className="bg-[#E85A6B] hover:bg-[#D44558]">
                 {tNav("newOrder")}
               </Button>
             </Link>
@@ -193,7 +193,7 @@ export default async function DashboardPage() {
                   {recentOrders.map((order) => (
                     <TableRow key={order.id}>
                       <TableCell>
-                        <Link href={`/dashboard/orders/${order.id}`} className="text-pink-600 hover:underline font-medium">
+                        <Link href={`/dashboard/orders/${order.id}`} className="text-[#E85A6B] hover:underline font-medium">
                           {order.orderNumber}
                         </Link>
                       </TableCell>
@@ -216,7 +216,7 @@ export default async function DashboardPage() {
                 {topProducts.map((p, i) => (
                   <li key={p.productName} className="flex items-center justify-between gap-3">
                     <span className="flex items-center gap-3 text-sm font-medium">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-pink-100 text-xs font-bold text-pink-600">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#E85A6B]/12 text-xs font-bold text-[#E85A6B]">
                         {i + 1}
                       </span>
                       {p.productName}

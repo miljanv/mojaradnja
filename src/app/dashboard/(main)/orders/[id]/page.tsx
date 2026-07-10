@@ -153,7 +153,7 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
                 <CardTitle>{t("customer")}</CardTitle>
               </CardHeader>
               <CardContent>
-                <Link href={`/dashboard/customers/${order.customer.id}`} className="text-pink-600 hover:underline">
+                <Link href={`/dashboard/customers/${order.customer.id}`} className="text-[#E85A6B] hover:underline">
                   {order.customer.fullName}
                 </Link>
               </CardContent>

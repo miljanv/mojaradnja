@@ -58,7 +58,7 @@ export function ProductOrderForm({
 
   const hasVariants = variants.length > 0;
   const availableVariants = useMemo(
-    () => variants.filter((v) => v.isAvailable && v.stock > 0),
+    () => variants.filter((v) => v.isAvailable),
     [variants]
   );
 
@@ -83,8 +83,7 @@ export function ProductOrderForm({
     [variants, selectedVariantId]
   );
 
-  const selectedAvailable =
-    selectedVariant && selectedVariant.isAvailable && selectedVariant.stock > 0;
+  const selectedAvailable = selectedVariant && selectedVariant.isAvailable;
 
   const totalPrice = price * quantity;
   const variantInfo = selectedVariant ? formatVariantAttributes(selectedVariant) : undefined;
@@ -203,7 +202,7 @@ export function ProductOrderForm({
             >
               <option value="">{t("selectVariant")}</option>
               {variants.map((v) => {
-                const unavailable = !v.isAvailable || v.stock <= 0;
+                const unavailable = !v.isAvailable;
                 return (
                   <option key={v.id} value={v.id} disabled={unavailable}>
                     {getVariantDisplayValue(v)}

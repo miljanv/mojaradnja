@@ -41,7 +41,7 @@ export function ImpersonateShopButton({
       size={size}
       disabled={pending}
       onClick={handleClick}
-      className={variant === "default" ? "bg-pink-500 hover:bg-pink-600" : undefined}
+      className={variant === "default" ? "bg-[#E85A6B] hover:bg-[#D44558]" : undefined}
     >
       <LogIn className="mr-1.5 h-3.5 w-3.5" />
       {pending ? "Ulazim..." : "Upravljaj butikom"}

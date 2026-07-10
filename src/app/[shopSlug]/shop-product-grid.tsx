@@ -68,9 +68,10 @@ export function ShopProductGrid({
   }, [products, activeCategory]);
 
   function isSoldOut(product: ShopProduct) {
+    // Only product status marks sold out — stock 0 is common when sellers don't track inventory
     if (product.status === "SOLD_OUT") return true;
     if (product.variants.length === 0) return false;
-    return product.variants.every((v) => !v.isAvailable || v.stock <= 0);
+    return product.variants.every((v) => !v.isAvailable);
   }
 
   function handleAddToCart(product: ShopProduct) {
@@ -85,7 +86,7 @@ export function ShopProductGrid({
       return;
     }
 
-    if (variant && (!variant.isAvailable || variant.stock <= 0)) {
+    if (variant && !variant.isAvailable) {
       toast.error(t("outOfStock"));
       return;
     }
@@ -178,7 +179,7 @@ export function ShopProductGrid({
             >
               <option value="">{t("selectVariant")}</option>
               {product.variants.map((v) => {
-                const unavailable = !v.isAvailable || v.stock <= 0;
+                const unavailable = !v.isAvailable;
                 return (
                   <option key={v.id} value={v.id} disabled={unavailable}>
                     {getVariantDisplayValue(v)}
