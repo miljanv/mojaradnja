@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { AdminExtendForm } from "./extend-form";
 import { ImpersonateShopButton } from "@/components/admin/impersonate-shop-button";
+import { AdminShopTryOnPanel } from "@/components/admin/shop-try-on-panel";
 
 type Params = Promise<{ id: string }>;
 
@@ -37,6 +38,15 @@ export default async function AdminUserDetailPage({ params }: { params: Params }
           },
           _count: {
             select: { products: true, orders: true, customers: true },
+          },
+          aiCreditTransactions: {
+            orderBy: { createdAt: "desc" },
+            take: 30,
+          },
+          tryOnJobs: {
+            orderBy: { createdAt: "desc" },
+            take: 20,
+            include: { product: { select: { name: true } } },
           },
         },
       },
@@ -148,6 +158,13 @@ export default async function AdminUserDetailPage({ params }: { params: Params }
                 )}
               </TableBody>
             </Table>
+            <AdminShopTryOnPanel
+              shopId={shop.id}
+              enabled={shop.virtualTryOnEnabled}
+              aiCredits={shop.aiCredits}
+              transactions={shop.aiCreditTransactions}
+              jobs={shop.tryOnJobs}
+            />
           </CardContent>
         </Card>
       ))}

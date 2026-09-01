@@ -5,6 +5,7 @@ import { requireShop } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { ProductForm } from "../../product-form";
+import { ProductTryOnSettings } from "@/components/dashboard/product-try-on-settings";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { parseVariantAttributesFromDb } from "@/lib/shop-theme";
@@ -68,6 +69,19 @@ export default async function EditProductPage({ params }: { params: Params }) {
             })),
           }}
           categories={categories}
+        />
+        <ProductTryOnSettings
+          shopId={shop.id}
+          productId={product.id}
+          shopEnabled={shop.virtualTryOnEnabled}
+          aiCredits={shop.aiCredits}
+          images={product.images.map((img) => ({ id: img.id, url: img.url }))}
+          initial={{
+            tryOnEnabled: product.tryOnEnabled,
+            tryOnCategory: product.tryOnCategory,
+            tryOnPhotoType: product.tryOnPhotoType,
+            tryOnGarmentImageKey: product.tryOnGarmentImageKey,
+          }}
         />
       </div>
     </div>

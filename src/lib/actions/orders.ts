@@ -285,6 +285,20 @@ export async function createMiniShopCartOrder(
 
     void notifyShopNewOrder(order.id);
 
+    try {
+      const { getVisitorSessionId } = await import("@/lib/try-on/visitor");
+      const { linkTryOnJobsToOrder } = await import("@/lib/try-on/jobs");
+      const visitorSessionId = await getVisitorSessionId();
+      await linkTryOnJobsToOrder({
+        shopId: shop.id,
+        orderId: order.id,
+        visitorSessionId,
+        productIds,
+      });
+    } catch {
+      // Non-blocking analytics link
+    }
+
     return { success: true, data: { orderNumber, orderId: order.id } };
   } catch (e) {
     return { success: false, error: e instanceof Error ? e.message : "Failed to create order" };

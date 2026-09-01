@@ -3,7 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
 /** Bump after schema changes to refresh the dev-server Prisma singleton. */
-const PRISMA_SCHEMA_VERSION = "2026-07-subscription-v1";
+const PRISMA_SCHEMA_VERSION = "2026-08-virtual-try-on-v1";
 
 type GlobalPrisma = {
   prisma: PrismaClient | undefined;

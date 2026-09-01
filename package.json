@@ -13,7 +13,9 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:demo": "tsx scripts/seed-demo.ts",
     "db:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test": "vitest run --config vitest.config.mts",
+    "typecheck": "tsc --noEmit"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -21,6 +23,7 @@
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@clerk/nextjs": "^7.5.14",
+    "@fal-ai/client": "^1.10.1",
     "@hookform/resolvers": "^5.4.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
@@ -65,10 +68,12 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4",
     "tsx": "^4.23.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.11"
   }
 }

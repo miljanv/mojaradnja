@@ -64,6 +64,10 @@ export function ShopFooter({ shop }: ShopFooterProps) {
               {BRAND_NAME}
             </Link>
           </p>
+          <p className="max-w-xs text-right leading-relaxed opacity-80">
+            Privremena AI obrada fotografija (Virtual Try-On) briše se automatski
+            nakon definisanog perioda čuvanja.
+          </p>
           <Link
             href="/dashboard"
             className="underline-offset-2 hover:underline hover:text-[var(--shop-primary)]"

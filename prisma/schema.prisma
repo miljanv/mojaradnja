@@ -47,18 +47,23 @@ model Shop {
   returnPolicy      String?
   exchangePolicy    String?
   returnAddress     String?
-  isPublished       Boolean           @default(false)
-  orderCounter      Int               @default(1000)
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  owner             User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  products          Product[]
-  customers         Customer[]
-  orders            Order[]
-  exchangeRequests  ExchangeRequest[]
-  complaintRequests ComplaintRequest[]
-  messageTemplates  MessageTemplate[]
-  categories        ShopCategory[]
+  isPublished         Boolean           @default(false)
+  orderCounter        Int               @default(1000)
+  virtualTryOnEnabled Boolean           @default(false)
+  aiCredits           Int               @default(0)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  owner               User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  products            Product[]
+  customers           Customer[]
+  orders              Order[]
+  exchangeRequests    ExchangeRequest[]
+  complaintRequests   ComplaintRequest[]
+  messageTemplates    MessageTemplate[]
+  categories          ShopCategory[]
+  tryOnJobs           TryOnJob[]
+  aiCreditTransactions AiCreditTransaction[]
+  tryOnAnalyticsEvents TryOnAnalyticsEvent[]
 
   @@index([ownerId])
 }
@@ -76,22 +81,27 @@ model ShopCategory {
 }
 
 model Product {
-  id             String           @id @default(cuid())
-  shopId         String
-  name           String
-  slug           String
-  description    String?
-  price          Decimal          @db.Decimal(10, 2)
-  compareAtPrice Decimal?         @db.Decimal(10, 2)
-  category       String?
-  status         ProductStatus    @default(DRAFT)
-  isFeatured     Boolean          @default(false)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  shop           Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  images         ProductImage[]
-  variants       ProductVariant[]
-  orderItems     OrderItem[]
+  id                   String           @id @default(cuid())
+  shopId               String
+  name                 String
+  slug                 String
+  description          String?
+  price                Decimal          @db.Decimal(10, 2)
+  compareAtPrice       Decimal?         @db.Decimal(10, 2)
+  category             String?
+  status               ProductStatus    @default(DRAFT)
+  isFeatured           Boolean          @default(false)
+  tryOnEnabled         Boolean          @default(false)
+  tryOnCategory        String?
+  tryOnPhotoType       String?
+  tryOnGarmentImageKey String?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  shop                 Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  images               ProductImage[]
+  variants             ProductVariant[]
+  orderItems           OrderItem[]
+  tryOnJobs            TryOnJob[]
 
   @@unique([shopId, slug])
   @@index([shopId, status])
@@ -169,6 +179,7 @@ model Order {
   items           OrderItem[]
   exchangeRequests ExchangeRequest[]
   complaintRequests ComplaintRequest[]
+  tryOnJobs       TryOnJob[]
 
   @@unique([shopId, orderNumber])
   @@index([shopId, status])
@@ -314,4 +325,98 @@ enum MessageTemplateType {
   EXCHANGE_INSTRUCTIONS
   COMPLAINT_RECEIVED
   CUSTOM
+}
+
+enum TryOnJobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum AiCreditTransactionType {
+  ADMIN_ADD
+  ADMIN_REMOVE
+  TRY_ON_USE
+  TRY_ON_REFUND
+}
+
+enum TryOnAnalyticsEventType {
+  TRY_ON_OPENED
+  TRY_ON_STARTED
+  TRY_ON_COMPLETED
+  TRY_ON_FAILED
+  ORDER_STARTED_AFTER_TRY_ON
+  ORDER_CREATED_AFTER_TRY_ON
+}
+
+model TryOnJob {
+  id                  String         @id @default(cuid())
+  shopId              String
+  productId           String
+  visitorSessionId    String?
+  orderId             String?
+  provider            String         @default("fal-fashn-v1.6")
+  providerRequestId   String?
+  personImageKey      String
+  resultImageKey      String?
+  status              TryOnJobStatus @default(PENDING)
+  creditConsumed      Boolean        @default(false)
+  creditRefunded      Boolean        @default(false)
+  errorCode           String?
+  errorMessage        String?
+  idempotencyKey      String?        @unique
+  retryCount          Int            @default(0)
+  createdAt           DateTime       @default(now())
+  startedAt           DateTime?
+  completedAt         DateTime?
+  failedAt            DateTime?
+  personImageDeletedAt DateTime?
+  resultImageDeletedAt DateTime?
+  shop                Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  product             Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order               Order?         @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  creditTransactions  AiCreditTransaction[]
+  analyticsEvents     TryOnAnalyticsEvent[]
+
+  @@index([shopId, createdAt])
+  @@index([shopId, status])
+  @@index([productId])
+  @@index([visitorSessionId, productId, status])
+  @@index([providerRequestId])
+  @@index([status, createdAt])
+}
+
+model AiCreditTransaction {
+  id              String                   @id @default(cuid())
+  shopId          String
+  tryOnJobId      String?
+  amount          Int
+  type            AiCreditTransactionType
+  note            String?
+  createdByUserId String?
+  createdAt       DateTime                 @default(now())
+  shop            Shop                     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  tryOnJob        TryOnJob?                @relation(fields: [tryOnJobId], references: [id], onDelete: SetNull)
+
+  @@index([shopId, createdAt])
+  @@index([tryOnJobId])
+}
+
+model TryOnAnalyticsEvent {
+  id               String                   @id @default(cuid())
+  shopId           String
+  productId        String?
+  tryOnJobId       String?
+  visitorSessionId String?
+  orderId          String?
+  type             TryOnAnalyticsEventType
+  metadata         Json?
+  createdAt        DateTime                 @default(now())
+  shop             Shop                     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  tryOnJob         TryOnJob?                @relation(fields: [tryOnJobId], references: [id], onDelete: SetNull)
+
+  @@index([shopId, type, createdAt])
+  @@index([tryOnJobId])
+  @@index([visitorSessionId])
 }

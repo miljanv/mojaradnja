@@ -7,6 +7,8 @@ import { getPublishedShop } from "@/lib/shop-public";
 import { formatCurrency } from "@/lib/utils-app";
 import { ArrowLeft } from "lucide-react";
 import { ProductOrderForm } from "./product-order-form";
+import { TryOnButton } from "@/components/try-on/try-on-modal";
+import { productTryOnEligible } from "@/lib/try-on/eligibility";
 
 type PageProps = {
   params: Promise<{ shopSlug: string; productSlug: string }>;
@@ -137,6 +139,29 @@ export default async function ProductPage({ params }: PageProps) {
             )}
           </div>
 
+          {shop.virtualTryOnEnabled &&
+            productTryOnEligible(product) &&
+            shop.aiCredits > 0 &&
+            (() => {
+              const garment =
+                product.images.find(
+                  (img) =>
+                    img.id === product.tryOnGarmentImageKey ||
+                    img.url === product.tryOnGarmentImageKey
+                ) ?? product.images[0];
+              if (!garment) return null;
+              return (
+                <TryOnButton
+                  shopSlug={shop.slug}
+                  productId={product.id}
+                  productName={product.name}
+                  garmentImageUrl={garment.url}
+                  primaryColor={shop.primaryColor}
+                />
+              );
+            })()}
+
+          <div id="product-order-form">
           <ProductOrderForm
             shopSlug={shop.slug}
             shopName={shop.name}
@@ -157,6 +182,7 @@ export default async function ProductPage({ params }: PageProps) {
               isAvailable: v.isAvailable,
             }))}
           />
+          </div>
         </div>
       </div>
     </div>

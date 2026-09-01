@@ -28,6 +28,7 @@ import {
   Users,
   Plus,
 } from "lucide-react";
+import { MerchantTryOnStatsCard } from "@/components/dashboard/merchant-try-on-stats";
 
 export default async function DashboardPage() {
   const { shop } = await requireShop();
@@ -175,6 +176,8 @@ export default async function DashboardPage() {
             <Button variant="outline"><Plus className="h-4 w-4 mr-2" />{tNav("complaints")}</Button>
           </Link>
         </div>
+
+        <MerchantTryOnStatsCard shopId={shop.id} />
 
         <div className="grid lg:grid-cols-3 gap-6">
           <Card className="lg:col-span-2 shadow-sm">
