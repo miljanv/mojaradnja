@@ -2,7 +2,13 @@ import { getMerchantTryOnStats } from "@/lib/try-on/jobs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export async function MerchantTryOnStatsCard({ shopId }: { shopId: string }) {
-  const stats = await getMerchantTryOnStats(shopId);
+  let stats;
+  try {
+    stats = await getMerchantTryOnStats(shopId);
+  } catch {
+    // Schema not migrated yet — don't break the dashboard.
+    return null;
+  }
 
   if (!stats.virtualTryOnEnabled) return null;
 
