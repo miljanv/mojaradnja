@@ -7,21 +7,55 @@ import {
   type TryOnProviderStatus,
 } from "./types";
 
-function ensureFalConfigured() {
-  const key = process.env.FAL_KEY;
-  if (!key) {
+function getFalKey(): string {
+  const raw = process.env.FAL_KEY?.trim() ?? "";
+  if (!raw) {
     throw new Error("FAL_KEY is not configured");
   }
-  fal.config({ credentials: key });
+  // Users sometimes paste "Key id:secret" or wrap value in quotes.
+  return raw
+    .replace(/^['"]|['"]$/g, "")
+    .replace(/^Key\s+/i, "")
+    .trim();
+}
+
+function ensureFalConfigured() {
+  fal.config({ credentials: getFalKey() });
+}
+
+async function toFalHostedUrl(sourceUrl: string): Promise<string> {
+  ensureFalConfigured();
+  const res = await fetch(sourceUrl);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch image for provider (${res.status})`);
+  }
+  const contentType = res.headers.get("content-type") ?? "image/jpeg";
+  const buffer = Buffer.from(await res.arrayBuffer());
+  const ext = contentType.includes("png")
+    ? "png"
+    : contentType.includes("webp")
+      ? "webp"
+      : "jpg";
+  const file = new File([new Uint8Array(buffer)], `tryon.${ext}`, {
+    type: contentType,
+  });
+  return fal.storage.upload(file);
 }
 
 export class FalFashnTryOnProvider implements TryOnProvider {
   async submit(input: SubmitTryOnInput): Promise<SubmitTryOnResult> {
     ensureFalConfigured();
+
+    // Host images on fal so the queue never depends on our CDN / private ACLs.
+    const [modelImage, garmentImage] = await Promise.all([
+      toFalHostedUrl(input.personImageUrl),
+      toFalHostedUrl(input.garmentImageUrl),
+    ]);
+
     const { request_id } = await fal.queue.submit(FAL_TRY_ON_MODEL, {
       input: {
-        model_image: input.personImageUrl,
-        garment_image: input.garmentImageUrl,
+        model_image: modelImage,
+        garment_image: garmentImage,
         category: input.category,
         mode: "balanced",
         garment_photo_type: input.garmentPhotoType,

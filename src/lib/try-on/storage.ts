@@ -2,6 +2,29 @@ import { UTApi } from "uploadthing/server";
 
 const utapi = new UTApi();
 
+function decodeUploadThingAppId(): string | null {
+  const explicit = process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID?.trim();
+  if (explicit) return explicit;
+
+  const token = process.env.UPLOADTHING_TOKEN?.trim();
+  if (!token) return null;
+  try {
+    const json = JSON.parse(
+      Buffer.from(token, "base64url").toString("utf8")
+    ) as { appId?: string };
+    return json.appId ?? null;
+  } catch {
+    try {
+      const json = JSON.parse(
+        Buffer.from(token, "base64").toString("utf8")
+      ) as { appId?: string };
+      return json.appId ?? null;
+    } catch {
+      return null;
+    }
+  }
+}
+
 export function extractUploadThingKey(urlOrKey: string): string {
   if (!urlOrKey.includes("/")) return urlOrKey;
   try {
@@ -17,16 +40,47 @@ export function extractUploadThingKey(urlOrKey: string): string {
 
 export function uploadThingUrlFromKey(key: string): string {
   if (key.startsWith("http://") || key.startsWith("https://")) return key;
-  const appId = process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID;
+  const appId = decodeUploadThingAppId();
   if (appId) {
     return `https://${appId}.ufs.sh/f/${key}`;
   }
-  return key;
+  // Legacy fallback
+  return `https://utfs.io/f/${key}`;
 }
 
 /** Public CDN URL usable by fal.ai to fetch the image. */
 export function getPublicImageUrl(keyOrUrl: string): string {
   return uploadThingUrlFromKey(keyOrUrl);
+}
+
+/**
+ * Prefer a short-lived signed URL when files are private;
+ * fall back to public CDN URL.
+ */
+export async function getFetchableImageUrl(keyOrUrl: string): Promise<string> {
+  if (keyOrUrl.startsWith("http://") || keyOrUrl.startsWith("https://")) {
+    return keyOrUrl;
+  }
+
+  const key = extractUploadThingKey(keyOrUrl);
+  try {
+    if (typeof utapi.generateSignedURL === "function") {
+      const signed = await utapi.generateSignedURL(key, {
+        expiresIn: 60 * 30,
+      });
+      if (typeof signed === "string") return signed;
+      if (signed && typeof signed === "object") {
+        const url =
+          (signed as { ufsUrl?: string; url?: string }).ufsUrl ??
+          (signed as { url?: string }).url;
+        if (url) return url;
+      }
+    }
+  } catch {
+    // Fall through to public URL
+  }
+
+  return uploadThingUrlFromKey(key);
 }
 
 export async function uploadImageFromUrl(

@@ -6,7 +6,7 @@ import {
   TryOnServiceError,
 } from "./credits";
 import { getTryOnProvider } from "./provider";
-import { getPublicImageUrl, uploadImageFromUrl } from "./storage";
+import { getFetchableImageUrl, getPublicImageUrl, uploadImageFromUrl } from "./storage";
 import { trackTryOnEvent } from "./analytics";
 import {
   MAX_ACTIVE_JOBS_PER_PRODUCT,
@@ -179,9 +179,14 @@ export async function createTryOnJob(params: {
 
   const provider = getTryOnProvider();
   try {
+    const [personImageUrl, garmentImageUrl] = await Promise.all([
+      getFetchableImageUrl(params.personImageKey),
+      getFetchableImageUrl(garmentImage.url),
+    ]);
+
     const submitted = await provider.submit({
-      personImageUrl: getPublicImageUrl(params.personImageKey),
-      garmentImageUrl: getPublicImageUrl(garmentImage.url),
+      personImageUrl,
+      garmentImageUrl,
       category: product.tryOnCategory as TryOnCategory,
       garmentPhotoType: product.tryOnPhotoType as TryOnPhotoType,
     });
@@ -397,9 +402,13 @@ async function retryProviderSubmit(jobId: string): Promise<void> {
   }
 
   const provider = getTryOnProvider();
+  const [personImageUrl, garmentImageUrl] = await Promise.all([
+    getFetchableImageUrl(job.personImageKey),
+    getFetchableImageUrl(garmentImage.url),
+  ]);
   const submitted = await provider.submit({
-    personImageUrl: getPublicImageUrl(job.personImageKey),
-    garmentImageUrl: getPublicImageUrl(garmentImage.url),
+    personImageUrl,
+    garmentImageUrl,
     category: job.product.tryOnCategory,
     garmentPhotoType: job.product.tryOnPhotoType,
   });
