@@ -79,16 +79,12 @@ export default async function KmsLandingPage() {
               <div className="relative aspect-[3/4]">
                 <Image
                   src="/kms/landing-result.jpg"
-                  alt="Ista haljina na osobi — AI prikaz"
+                  alt="Ista haljina na osobi"
                   fill
                   sizes="(max-width: 640px) 48vw, 320px"
                   className="object-cover"
                   priority
                 />
-                <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white backdrop-blur">
-                  <Sparkles className="h-3 w-3" />
-                  AI
-                </span>
               </div>
               <figcaption className="px-2.5 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--kms-ink-soft)] sm:px-3 sm:text-[11px]">
                 Kako tebi stoji
@@ -102,7 +98,7 @@ export default async function KmsLandingPage() {
             Kakva fotografija treba?
           </h2>
           <p className="mt-2 max-w-lg text-sm leading-relaxed text-[var(--kms-ink-soft)]">
-            Najbolji rezultat daje portret celog tela — stojiš sprijeda, vidljiva si
+            Najbolji rezultat daje portret celog tela — stojiš sprijeda, vidi se
             od glave do stopala, uz dnevno svetlo.
           </p>
           <div className="mx-auto mt-5 max-w-[220px] sm:mx-0 sm:max-w-[240px]">

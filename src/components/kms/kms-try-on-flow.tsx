@@ -34,7 +34,7 @@ const WORKING_COPY = [
 function friendlyError(code: unknown): string {
   switch (code) {
     case "RATE_LIMITED":
-      return "Malo si brza za nas 🙂 Probaj ponovo za koji minut.";
+      return "Malo si brz/a za nas 🙂 Probaj ponovo za koji minut.";
     case "ACTIVE_JOB_EXISTS":
       return "Već pravimo tvoj look za ovaj komad. Sačekaj trenutak.";
     case "INVALID_IMAGE":
@@ -442,7 +442,7 @@ function TryOnSheet({
                   onClick={() => void share("Šta kažeš, kako mi stoji? 😍")}
                   className="rounded-full border border-[var(--kms-line)] bg-white px-4 py-3 text-sm font-semibold"
                 >
-                  Pošalji prijateljici
+                  Pošalji prijatelju
                 </button>
               </div>
 
