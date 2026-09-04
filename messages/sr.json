@@ -176,9 +176,12 @@
   "exchanges": {
     "title": "Zamene",
     "new": "Nova zamena",
+    "edit": "Izmeni zamenu",
     "original": "Originalni proizvod",
     "requested": "Traženi proizvod",
     "reason": "Razlog",
+    "size": "Veličina",
+    "color": "Boja",
     "shippingPaidBy": "Poštarina plaća",
     "statuses": {
       "NEW": "Nova",
@@ -200,9 +203,11 @@
   "complaints": {
     "title": "Reklamacije",
     "new": "Nova reklamacija",
+    "edit": "Izmeni reklamaciju",
     "reason": "Razlog",
     "description": "Opis",
     "resolution": "Rešenje",
+    "copyMessage": "Kopiraj poruku",
     "statuses": {
       "NEW": "Nova",
       "REVIEWING": "U pregledu",

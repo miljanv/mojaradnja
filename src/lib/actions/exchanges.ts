@@ -62,6 +62,49 @@ export async function updateExchangeStatus(
   }
 }
 
+export async function updateExchange(
+  shopId: string,
+  exchangeId: string,
+  data: {
+    originalProductName?: string;
+    originalSize?: string | null;
+    originalColor?: string | null;
+    requestedProductName?: string | null;
+    requestedSize?: string | null;
+    requestedColor?: string | null;
+    reason?: string | null;
+    shippingPaidBy?: ShippingPaidBy;
+    note?: string | null;
+    internalNote?: string | null;
+    status?: ExchangeStatus;
+  }
+): Promise<ActionResult> {
+  try {
+    await verifyShopOwnership(shopId);
+    await prisma.exchangeRequest.update({
+      where: { id: exchangeId, shopId },
+      data: {
+        originalProductName: data.originalProductName,
+        originalSize: data.originalSize,
+        originalColor: data.originalColor,
+        requestedProductName: data.requestedProductName,
+        requestedSize: data.requestedSize,
+        requestedColor: data.requestedColor,
+        reason: data.reason,
+        shippingPaidBy: data.shippingPaidBy,
+        note: data.note,
+        internalNote: data.internalNote,
+        status: data.status,
+      },
+    });
+    revalidatePath("/dashboard/exchanges");
+    revalidatePath(`/dashboard/exchanges/${exchangeId}`);
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : "Failed to update exchange" };
+  }
+}
+
 export async function createPublicExchangeRequest(
   shopSlug: string,
   data: {
@@ -157,10 +200,11 @@ export async function updateComplaint(
   complaintId: string,
   data: {
     reason?: string;
-    description?: string;
-    resolution?: string;
-    note?: string;
-    internalNote?: string;
+    description?: string | null;
+    resolution?: string | null;
+    note?: string | null;
+    internalNote?: string | null;
+    status?: ComplaintStatus;
   }
 ): Promise<ActionResult> {
   try {
@@ -169,6 +213,7 @@ export async function updateComplaint(
       where: { id: complaintId, shopId },
       data,
     });
+    revalidatePath("/dashboard/complaints");
     revalidatePath(`/dashboard/complaints/${complaintId}`);
     return { success: true };
   } catch (e) {

@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 import type { ComplaintStatus } from "@/lib/prisma-client";
 
 type SearchParams = Promise<{ search?: string; status?: string }>;
@@ -111,12 +111,17 @@ export default async function ComplaintsPage({
                   <TableHead>{tOrders("orderNumber")}</TableHead>
                   <TableHead>{tCommon("status")}</TableHead>
                   <TableHead>{tCommon("date")}</TableHead>
+                  <TableHead className="text-right">{tCommon("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {complaints.map((c) => (
                   <TableRow key={c.id}>
-                    <TableCell className="font-medium">{c.reason}</TableCell>
+                    <TableCell className="font-medium">
+                      <Link href={`/dashboard/complaints/${c.id}`} className="text-[#E85A6B] hover:underline">
+                        {c.reason}
+                      </Link>
+                    </TableCell>
                     <TableCell>
                       <Link href={`/dashboard/customers/${c.customer.id}`} className="text-[#E85A6B] hover:underline">
                         {c.customer.fullName}
@@ -131,6 +136,13 @@ export default async function ComplaintsPage({
                     </TableCell>
                     <TableCell><StatusBadge status={c.status} type="complaint" /></TableCell>
                     <TableCell>{formatDate(c.createdAt)}</TableCell>
+                    <TableCell className="text-right">
+                      <Link href={`/dashboard/complaints/${c.id}`}>
+                        <Button variant="ghost" size="sm" title={t("edit")}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

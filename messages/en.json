@@ -176,9 +176,12 @@
   "exchanges": {
     "title": "Exchanges",
     "new": "New exchange",
+    "edit": "Edit exchange",
     "original": "Original product",
     "requested": "Requested product",
     "reason": "Reason",
+    "size": "Size",
+    "color": "Color",
     "shippingPaidBy": "Shipping paid by",
     "statuses": {
       "NEW": "New",
@@ -200,9 +203,11 @@
   "complaints": {
     "title": "Complaints",
     "new": "New complaint",
+    "edit": "Edit complaint",
     "reason": "Reason",
     "description": "Description",
     "resolution": "Resolution",
+    "copyMessage": "Copy message",
     "statuses": {
       "NEW": "New",
       "REVIEWING": "Reviewing",

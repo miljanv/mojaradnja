@@ -7,9 +7,8 @@ import { formatDate } from "@/lib/utils-app";
 import { renderTemplate } from "@/lib/messages";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { StatusBadge } from "@/components/dashboard/status-badge";
-import { ExchangeDetailActions } from "./exchange-detail-actions";
+import { ExchangeEditForm } from "./exchange-edit-form";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 
 type Params = Promise<{ id: string }>;
@@ -45,7 +44,7 @@ export default async function ExchangeDetailPage({ params }: { params: Params })
   return (
     <div>
       <DashboardHeader
-        title={`${t("title")} — ${exchange.order.orderNumber}`}
+        title={`${t("edit")} — ${exchange.order.orderNumber}`}
         subtitle={formatDate(exchange.createdAt)}
         actions={
           <Link href="/dashboard/exchanges">
@@ -57,71 +56,45 @@ export default async function ExchangeDetailPage({ params }: { params: Params })
         }
       />
 
-      <div className="p-4 sm:p-6 grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("original")}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm space-y-1">
-              <p><strong>{exchange.originalProductName}</strong></p>
-              <p>Veličina: {exchange.originalSize ?? "—"}</p>
-              <p>Boja: {exchange.originalColor ?? "—"}</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("requested")}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm space-y-1">
-              <p><strong>{exchange.requestedProductName ?? "—"}</strong></p>
-              <p>Veličina: {exchange.requestedSize ?? "—"}</p>
-              <p>Boja: {exchange.requestedColor ?? "—"}</p>
-            </CardContent>
-          </Card>
-
-          {exchange.reason && (
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("reason")}</CardTitle>
-              </CardHeader>
-              <CardContent>{exchange.reason}</CardContent>
-            </Card>
-          )}
+      <div className="space-y-4 p-4 sm:p-6">
+        <div className="flex flex-wrap items-center gap-3 text-sm">
+          <StatusBadge status={exchange.status} type="exchange" />
+          <span>
+            {tOrders("customer")}:{" "}
+            <Link
+              href={`/dashboard/customers/${exchange.customer.id}`}
+              className="text-[#E85A6B] hover:underline"
+            >
+              {exchange.customer.fullName}
+            </Link>
+          </span>
+          <span>
+            {tOrders("orderNumber")}:{" "}
+            <Link
+              href={`/dashboard/orders/${exchange.order.id}`}
+              className="text-[#E85A6B] hover:underline"
+            >
+              {exchange.order.orderNumber}
+            </Link>
+          </span>
         </div>
 
-        <div className="space-y-6">
-          <Card>
-            <CardContent className="pt-6 space-y-2">
-              <StatusBadge status={exchange.status} type="exchange" />
-              <p className="text-sm">
-                {tOrders("customer")}:{" "}
-                <Link href={`/dashboard/customers/${exchange.customer.id}`} className="text-[#E85A6B] hover:underline">
-                  {exchange.customer.fullName}
-                </Link>
-              </p>
-              <p className="text-sm">
-                {tOrders("orderNumber")}:{" "}
-                <Link href={`/dashboard/orders/${exchange.order.id}`} className="text-[#E85A6B] hover:underline">
-                  {exchange.order.orderNumber}
-                </Link>
-              </p>
-              <p className="text-sm">
-                {t("shippingPaidBy")}: {t(`shippingOptions.${exchange.shippingPaidBy}`)}
-              </p>
-            </CardContent>
-          </Card>
-
-          <ExchangeDetailActions
-            shopId={shop.id}
-            exchangeId={exchange.id}
-            status={exchange.status}
-            note={exchange.note}
-            internalNote={exchange.internalNote}
-            message={message}
-          />
-        </div>
+        <ExchangeEditForm
+          shopId={shop.id}
+          exchangeId={exchange.id}
+          status={exchange.status}
+          shippingPaidBy={exchange.shippingPaidBy}
+          originalProductName={exchange.originalProductName}
+          originalSize={exchange.originalSize}
+          originalColor={exchange.originalColor}
+          requestedProductName={exchange.requestedProductName}
+          requestedSize={exchange.requestedSize}
+          requestedColor={exchange.requestedColor}
+          reason={exchange.reason}
+          note={exchange.note}
+          internalNote={exchange.internalNote}
+          message={message}
+        />
       </div>
     </div>
   );

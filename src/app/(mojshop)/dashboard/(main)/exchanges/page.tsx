@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 import type { ExchangeStatus } from "@/lib/prisma-client";
 
 type SearchParams = Promise<{ search?: string; status?: string }>;
@@ -112,6 +112,7 @@ export default async function ExchangesPage({
                   <TableHead>{t("requested")}</TableHead>
                   <TableHead>{tCommon("status")}</TableHead>
                   <TableHead>{tCommon("date")}</TableHead>
+                  <TableHead className="text-right">{tCommon("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -127,6 +128,13 @@ export default async function ExchangesPage({
                     <TableCell>{ex.requestedProductName ?? "—"}</TableCell>
                     <TableCell><StatusBadge status={ex.status} type="exchange" /></TableCell>
                     <TableCell>{formatDate(ex.createdAt)}</TableCell>
+                    <TableCell className="text-right">
+                      <Link href={`/dashboard/exchanges/${ex.id}`}>
+                        <Button variant="ghost" size="sm" title={t("edit")}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

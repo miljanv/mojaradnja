@@ -69,9 +69,9 @@ export function ComplaintForm({
         internalNote: (form.get("internalNote") as string) || undefined,
       });
 
-      if (result.success) {
+      if (result.success && result.data) {
         toast.success(t("new"));
-        router.push("/dashboard/complaints");
+        router.push(`/dashboard/complaints/${result.data.complaintId}`);
       } else if (!result.success) {
         toast.error(result.error);
       }
