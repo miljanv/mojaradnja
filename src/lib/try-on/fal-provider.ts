@@ -61,7 +61,7 @@ export class FalFashnTryOnProvider implements TryOnProvider {
         garment_photo_type: input.garmentPhotoType,
         moderation_level: "permissive",
         num_samples: 1,
-        segmentation_free: true,
+        segmentation_free: input.segmentationFree,
         output_format: "jpeg",
       },
     });

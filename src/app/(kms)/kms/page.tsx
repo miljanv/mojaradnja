@@ -12,7 +12,7 @@ const STEPS = [
   {
     icon: Shirt,
     title: "Izaberi komad",
-    text: "Otvori shop i pronađi haljinu, majicu ili sako.",
+    text: "Otvori shop i pronađi haljinu, suknju, majicu ili sako.",
   },
   {
     icon: Camera,

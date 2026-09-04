@@ -1,11 +1,8 @@
-export type TryOnCategory = "tops" | "one-pieces";
-
-/** Reserved for future UI; not offered in MVP. */
-export type TryOnCategoryFuture = TryOnCategory | "bottoms";
+export type TryOnCategory = "tops" | "bottoms" | "one-pieces";
 
 export type TryOnPhotoType = "model" | "flat-lay";
 
-export const TRY_ON_CATEGORIES: TryOnCategory[] = ["tops", "one-pieces"];
+export const TRY_ON_CATEGORIES: TryOnCategory[] = ["tops", "bottoms", "one-pieces"];
 export const TRY_ON_PHOTO_TYPES: TryOnPhotoType[] = ["model", "flat-lay"];
 
 export type SubmitTryOnInput = {
@@ -13,6 +10,8 @@ export type SubmitTryOnInput = {
   garmentImageUrl: string;
   category: TryOnCategory;
   garmentPhotoType: TryOnPhotoType;
+  /** FASHN: true = bulkier garments / natural body; false = strip leftover clothes. */
+  segmentationFree: boolean;
 };
 
 export type SubmitTryOnResult = {

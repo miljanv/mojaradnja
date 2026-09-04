@@ -20,6 +20,7 @@ export async function updateProductTryOn(
     tryOnCategory: TryOnCategory | null;
     tryOnPhotoType: TryOnPhotoType | null;
     tryOnGarmentImageKey: string | null;
+    tryOnSegmentationFree: boolean;
   }
 ): Promise<ActionResult> {
   try {
@@ -74,6 +75,9 @@ export async function updateProductTryOn(
         tryOnGarmentImageKey: data.tryOnEnabled
           ? data.tryOnGarmentImageKey
           : null,
+        tryOnSegmentationFree: data.tryOnEnabled
+          ? data.tryOnSegmentationFree
+          : true,
       },
     });
 

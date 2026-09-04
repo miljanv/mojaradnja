@@ -81,6 +81,7 @@ export default async function EditProductPage({ params }: { params: Params }) {
             tryOnCategory: product.tryOnCategory,
             tryOnPhotoType: product.tryOnPhotoType,
             tryOnGarmentImageKey: product.tryOnGarmentImageKey,
+            tryOnSegmentationFree: product.tryOnSegmentationFree,
           }}
         />
       </div>

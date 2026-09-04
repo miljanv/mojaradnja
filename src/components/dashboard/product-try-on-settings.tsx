@@ -31,6 +31,7 @@ export function ProductTryOnSettings({
     tryOnCategory: string | null;
     tryOnPhotoType: string | null;
     tryOnGarmentImageKey: string | null;
+    tryOnSegmentationFree: boolean;
   };
 }) {
   const [pending, startTransition] = useTransition();
@@ -42,6 +43,9 @@ export function ProductTryOnSettings({
     (initial.tryOnPhotoType as TryOnPhotoType) || ""
   );
   const [garmentKey, setGarmentKey] = useState(initial.tryOnGarmentImageKey ?? "");
+  const [segmentationFree, setSegmentationFree] = useState(
+    initial.tryOnSegmentationFree
+  );
 
   if (!shopEnabled) {
     return (
@@ -79,6 +83,7 @@ export function ProductTryOnSettings({
         tryOnCategory: enabled ? (category as TryOnCategory) : null,
         tryOnPhotoType: enabled ? (photoType as TryOnPhotoType) : null,
         tryOnGarmentImageKey: enabled ? garmentKey : null,
+        tryOnSegmentationFree: segmentationFree,
       });
       if (!result.success) {
         toast.error(result.error);
@@ -111,7 +116,11 @@ export function ProductTryOnSettings({
         </div>
 
         <div className="space-y-2">
-          <Label>Fotografija proizvoda za AI</Label>
+          <Label>Fotografija koju AI koristi</Label>
+          <p className="text-xs text-muted-foreground">
+            Izaberi jednu jasnu sliku komada. Ako imaš i sliku na osobi i sliku
+            samog komada, bolje je slika na osobi.
+          </p>
           {images.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               Prvo dodajte fotografije proizvoda.
@@ -144,35 +153,68 @@ export function ProductTryOnSettings({
         </div>
 
         <div className="space-y-2">
-          <Label>Kategorija</Label>
+          <Label>Šta je na toj fotografiji?</Label>
+          <p className="text-xs text-muted-foreground">
+            Ovo je najvažnije za kvalitet. Ako kažeš da ima osoba, a nema je, AI
+            često padne. Ako kažeš da je samo komad, a na slici je osoba, kroj
+            može da se iskrivi.
+          </p>
           <div className="grid gap-2 sm:grid-cols-2">
             <OptionButton
-              selected={category === "tops"}
-              onClick={() => setCategory("tops")}
-              label="Majica, bluza ili sako"
+              selected={photoType === "model"}
+              onClick={() => setPhotoType("model")}
+              label="Osoba nosi komad"
+              hint="Model, lookbook, Instagram slika sa telom. Celu odeću treba da se vidi."
             />
             <OptionButton
-              selected={category === "one-pieces"}
-              onClick={() => setCategory("one-pieces")}
-              label="Haljina ili kombinezon"
+              selected={photoType === "flat-lay"}
+              onClick={() => setPhotoType("flat-lay")}
+              label="Samo komad, bez osobe"
+              hint="Flat-lay, hanger ili ghost mannequin. Čista pozadina, bez etikete na vratu ako može."
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label>Tip fotografije</Label>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <Label>Koji deo tela pokriva?</Label>
+          <p className="text-xs text-muted-foreground">
+            AI mora da zna šta da zameni na kupčevoj fotografiji.
+          </p>
+          <div className="grid gap-2 sm:grid-cols-3">
             <OptionButton
-              selected={photoType === "model"}
-              onClick={() => setPhotoType("model")}
-              label="Proizvod je na modelu"
+              selected={category === "tops"}
+              onClick={() => setCategory("tops")}
+              label="Gornji deo"
+              hint="Majica, bluza, sako, duks"
             />
             <OptionButton
-              selected={photoType === "flat-lay"}
-              onClick={() => setPhotoType("flat-lay")}
-              label="Flat-lay / proizvod je fotografisan samostalno"
+              selected={category === "bottoms"}
+              onClick={() => setCategory("bottoms")}
+              label="Donji deo"
+              hint="Suknja, pantalone, šorts"
+            />
+            <OptionButton
+              selected={category === "one-pieces"}
+              onClick={() => setCategory("one-pieces")}
+              label="Ceo komad"
+              hint="Haljina, kombinezon"
             />
           </div>
+        </div>
+
+        <div className="flex items-start justify-between gap-3 rounded-lg border border-black/10 px-3 py-3">
+          <div>
+            <p className="text-sm font-medium">Prirodnije uklapanje</p>
+            <p className="text-xs text-muted-foreground">
+              Uključeno je bolje za sako, duks i obimniji kroj. Isključi samo ako
+              na rezultatu ostane odeća koju kupac već nosi.
+            </p>
+          </div>
+          <Switch
+            checked={segmentationFree}
+            onCheckedChange={setSegmentationFree}
+            disabled={pending}
+          />
         </div>
 
         <Button type="button" onClick={save} disabled={pending}>
@@ -187,10 +229,12 @@ function OptionButton({
   selected,
   onClick,
   label,
+  hint,
 }: {
   selected: boolean;
   onClick: () => void;
   label: string;
+  hint?: string;
 }) {
   return (
     <button
@@ -203,7 +247,10 @@ function OptionButton({
           : "border-black/10 hover:bg-black/[0.02]"
       )}
     >
-      {label}
+      <span className="font-medium">{label}</span>
+      {hint ? (
+        <span className="mt-0.5 block text-xs text-muted-foreground">{hint}</span>
+      ) : null}
     </button>
   );
 }

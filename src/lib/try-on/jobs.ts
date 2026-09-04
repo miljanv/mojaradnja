@@ -174,6 +174,7 @@ export async function createTryOnJob(params: {
       garmentImageUrl,
       category: product.tryOnCategory as TryOnCategory,
       garmentPhotoType: product.tryOnPhotoType as TryOnPhotoType,
+      segmentationFree: product.tryOnSegmentationFree,
     });
 
     await prisma.tryOnJob.update({
@@ -402,6 +403,7 @@ async function retryProviderSubmit(jobId: string): Promise<void> {
     garmentImageUrl,
     category: job.product.tryOnCategory,
     garmentPhotoType: job.product.tryOnPhotoType,
+    segmentationFree: job.product.tryOnSegmentationFree,
   });
 
   await prisma.tryOnJob.update({

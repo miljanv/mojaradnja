@@ -1,3 +1,5 @@
+import { TRY_ON_CATEGORIES, TRY_ON_PHOTO_TYPES } from "./types";
+
 export function productTryOnEligible(product: {
   tryOnEnabled: boolean;
   tryOnCategory: string | null;
@@ -8,8 +10,10 @@ export function productTryOnEligible(product: {
   return (
     product.tryOnEnabled &&
     product.status === "ACTIVE" &&
-    (product.tryOnCategory === "tops" || product.tryOnCategory === "one-pieces") &&
-    (product.tryOnPhotoType === "model" || product.tryOnPhotoType === "flat-lay") &&
+    !!product.tryOnCategory &&
+    (TRY_ON_CATEGORIES as string[]).includes(product.tryOnCategory) &&
+    !!product.tryOnPhotoType &&
+    (TRY_ON_PHOTO_TYPES as string[]).includes(product.tryOnPhotoType) &&
     !!product.tryOnGarmentImageKey
   );
 }

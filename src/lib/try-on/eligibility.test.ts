@@ -33,9 +33,11 @@ describe("productTryOnEligible", () => {
     expect(productTryOnEligible({ ...base, tryOnGarmentImageKey: null })).toBe(false);
   });
 
-  it("does not offer bottoms in MVP categories", () => {
-    expect(TRY_ON_CATEGORIES).toEqual(["tops", "one-pieces"]);
-    expect(TRY_ON_CATEGORIES).not.toContain("bottoms");
+  it("accepts bottoms as well as tops and one-pieces", () => {
+    expect(TRY_ON_CATEGORIES).toEqual(["tops", "bottoms", "one-pieces"]);
+    expect(productTryOnEligible({ ...base, tryOnCategory: "bottoms" })).toBe(
+      true
+    );
   });
 
   it("supports model and flat-lay photo types", () => {

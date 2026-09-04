@@ -19,7 +19,7 @@ const PRODUCTS: Array<{
   slug: string;
   price: number;
   category: string;
-  tryOnCategory: "tops" | "one-pieces";
+  tryOnCategory: "tops" | "bottoms" | "one-pieces";
   tryOnPhotoType: "model" | "flat-lay";
   imageUrl: string;
   isFeatured?: boolean;
@@ -62,6 +62,26 @@ const PRODUCTS: Array<{
     tryOnCategory: "tops",
     tryOnPhotoType: "model",
     imageUrl: "/kms/demo/model-oversize-sako.jpg",
+    isFeatured: true,
+  },
+  {
+    name: "Lanena midi suknja",
+    slug: "lanena-midi-suknja-osoba",
+    price: 4200,
+    category: "Suknje",
+    tryOnCategory: "bottoms",
+    tryOnPhotoType: "model",
+    imageUrl: "/kms/demo/model-lanena-suknja.jpg",
+    isFeatured: true,
+  },
+  {
+    name: "Crna midi suknja",
+    slug: "crna-midi-suknja",
+    price: 4800,
+    category: "Suknje",
+    tryOnCategory: "bottoms",
+    tryOnPhotoType: "flat-lay",
+    imageUrl: "/kms/demo/crna-midi-suknja.jpg",
     isFeatured: true,
   },
   {

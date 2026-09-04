@@ -9,9 +9,10 @@ type Params = { params: Promise<{ id: string }> };
 const schema = z.object({
   shopId: z.string().min(1),
   tryOnEnabled: z.boolean(),
-  tryOnCategory: z.enum(["tops", "one-pieces"]).nullable(),
+  tryOnCategory: z.enum(["tops", "bottoms", "one-pieces"]).nullable(),
   tryOnPhotoType: z.enum(["model", "flat-lay"]).nullable(),
   tryOnGarmentImageKey: z.string().nullable(),
+  tryOnSegmentationFree: z.boolean().optional(),
 });
 
 export async function PATCH(req: Request, { params }: Params) {
@@ -36,6 +37,7 @@ export async function PATCH(req: Request, { params }: Params) {
       tryOnCategory: body.data.tryOnCategory,
       tryOnPhotoType: body.data.tryOnPhotoType,
       tryOnGarmentImageKey: body.data.tryOnGarmentImageKey,
+      tryOnSegmentationFree: body.data.tryOnSegmentationFree ?? true,
     });
 
     if (!result.success) {
