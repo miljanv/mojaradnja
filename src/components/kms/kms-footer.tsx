@@ -16,12 +16,20 @@ export async function KmsFooter() {
           AI prikaz je vizuelna simulacija i ne garantuje veličinu ni kroj. Tvoja
           fotografija se obrađuje privremeno i automatski briše.
         </p>
-        <a
-          href={`${getMojShopBaseUrl()}/sign-up`}
-          className="text-xs font-semibold underline-offset-4 hover:underline"
-        >
-          Za shopove
-        </a>
+        <div className="flex items-center gap-4 text-xs font-semibold">
+          <Link
+            href={`${prefix}/privatnost`}
+            className="underline-offset-4 hover:underline"
+          >
+            Privatnost
+          </Link>
+          <a
+            href={`${getMojShopBaseUrl()}/sign-up`}
+            className="underline-offset-4 hover:underline"
+          >
+            Za shopove
+          </a>
+        </div>
       </div>
     </footer>
   );

@@ -121,6 +121,7 @@ export default async function KmsProductPage({ params }: PageProps) {
                   purchaseUrl={purchaseUrl}
                   shareBaseUrl={getKmsBaseUrl()}
                   shopHref={`${prefix}/shop/${shop.slug}`}
+                  privacyHref={`${prefix}/privatnost`}
                 />
               )}
             </div>

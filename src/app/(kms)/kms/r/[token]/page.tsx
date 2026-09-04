@@ -63,7 +63,6 @@ export default async function KmsSharedResultPage({ params }: PageProps) {
             sizes="(max-width: 640px) 90vw, 420px"
             className="object-cover"
             priority
-            unoptimized
           />
           <span className="absolute bottom-2.5 left-2.5 rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur">
             KakoMiStoji.app{igHandle ? ` × @${igHandle}` : ""}

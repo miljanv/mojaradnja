@@ -2,8 +2,25 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { trackTryOnEvent } from "@/lib/try-on/analytics";
-import { getOrCreateVisitorSessionId } from "@/lib/try-on/visitor";
+import { getClientIpHash, getOrCreateVisitorSessionId } from "@/lib/try-on/visitor";
 import { KMS_EVENT_MAP, KMS_EVENT_NAMES, UTM_KEYS } from "@/lib/kms/events";
+
+/** In-memory cap so the open analytics endpoint cannot be used to flood a shop's funnel. */
+const MAX_EVENTS_PER_WINDOW = 60;
+const WINDOW_MS = 10 * 60 * 1000;
+const hits = new Map<string, { count: number; resetAt: number }>();
+
+function withinRateLimit(ipHash: string): boolean {
+  const now = Date.now();
+  const entry = hits.get(ipHash);
+  if (!entry || entry.resetAt < now) {
+    hits.set(ipHash, { count: 1, resetAt: now + WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= MAX_EVENTS_PER_WINDOW) return false;
+  entry.count += 1;
+  return true;
+}
 
 const schema = z.object({
   event: z.enum(KMS_EVENT_NAMES),
@@ -19,6 +36,11 @@ const schema = z.object({
 
 export async function POST(req: Request) {
   try {
+    if (!withinRateLimit(await getClientIpHash())) {
+      // Silently accepted — analytics is never worth surfacing an error for.
+      return NextResponse.json({ ok: true });
+    }
+
     const parsed = schema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ ok: false }, { status: 400 });

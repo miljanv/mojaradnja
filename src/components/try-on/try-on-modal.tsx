@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { ALLOWED_IMAGE_TYPES, compressImage } from "@/lib/try-on/compress-image";
 
 type Step =
   | "INSTRUCTIONS"
@@ -31,50 +32,18 @@ type Props = {
   primaryColor?: string;
 };
 
-const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
+const ALLOWED = ALLOWED_IMAGE_TYPES;
 
-async function compressImage(file: File): Promise<{
-  contentType: "image/jpeg" | "image/png" | "image/webp";
-  dataBase64: string;
-}> {
-  if (!ALLOWED.includes(file.type)) {
-    throw new Error("Fotografija nije podržana. Izaberite JPEG, PNG ili WebP.");
+/** The shared compressor throws stable codes; this modal shows Serbian copy. */
+function compressErrorMessage(code: string): string {
+  switch (code) {
+    case "UNSUPPORTED_TYPE":
+      return "Fotografija nije podržana. Izaberite JPEG, PNG ili WebP.";
+    case "TOO_LARGE":
+      return "Fotografija je prevelika (max 10 MB).";
+    default:
+      return "Virtualno probavanje trenutno nije dostupno. Pokušajte ponovo kasnije.";
   }
-  if (file.size > 10 * 1024 * 1024) {
-    throw new Error("Fotografija je prevelika (max 10 MB).");
-  }
-
-  const bitmap = await createImageBitmap(file);
-  const maxDim = 1600;
-  const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
-  const w = Math.round(bitmap.width * scale);
-  const h = Math.round(bitmap.height * scale);
-  const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Canvas nije dostupan");
-  ctx.drawImage(bitmap, 0, 0, w, h);
-  bitmap.close();
-
-  const blob: Blob = await new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (b) => (b ? resolve(b) : reject(new Error("Kompresija nije uspela"))),
-      "image/jpeg",
-      0.85
-    );
-  });
-
-  const buffer = await blob.arrayBuffer();
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  for (let i = 0; i < bytes.length; i += 1) {
-    binary += String.fromCharCode(bytes[i]!);
-  }
-  return {
-    contentType: "image/jpeg",
-    dataBase64: btoa(binary),
-  };
 }
 
 export function TryOnButton({
@@ -188,8 +157,16 @@ function TryOnModal({
       idempotencyRef.current ||
       `ito_${productId}_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
 
+    let compressed: Awaited<ReturnType<typeof compressImage>>;
     try {
-      const compressed = await compressImage(file);
+      compressed = await compressImage(file);
+    } catch (e) {
+      setErrorMessage(compressErrorMessage(e instanceof Error ? e.message : ""));
+      setStep("ERROR");
+      return;
+    }
+
+    try {
       const uploadRes = await fetch("/api/try-on/upload-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

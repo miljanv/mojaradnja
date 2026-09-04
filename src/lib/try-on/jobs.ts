@@ -502,7 +502,8 @@ export async function cleanupExpiredTryOnImages(): Promise<{
   resultDeleted: number;
 }> {
   const inputHours = Number(process.env.TRY_ON_INPUT_RETENTION_HOURS ?? 24);
-  const resultHours = Number(process.env.TRY_ON_RESULT_RETENTION_HOURS ?? 24);
+  // Results outlive inputs so shared KakoMiStoji links stay alive for a few days.
+  const resultHours = Number(process.env.TRY_ON_RESULT_RETENTION_HOURS ?? 72);
   const inputCutoff = new Date(Date.now() - inputHours * 60 * 60 * 1000);
   const resultCutoff = new Date(Date.now() - resultHours * 60 * 60 * 1000);
 

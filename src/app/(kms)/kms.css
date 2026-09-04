@@ -11,7 +11,7 @@
   min-height: 100dvh;
   background: var(--kms-cream);
   color: var(--kms-ink);
-  font-family: var(--font-kms), var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-kms), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 

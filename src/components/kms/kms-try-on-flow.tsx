@@ -18,6 +18,7 @@ type Props = {
   purchaseUrl: string | null;
   shareBaseUrl: string;
   shopHref: string;
+  privacyHref: string;
 };
 
 const POLL_INTERVAL_MS = 2500;
@@ -37,7 +38,10 @@ function friendlyError(code: unknown): string {
     case "ACTIVE_JOB_EXISTS":
       return "Već pravimo tvoj look za ovaj komad. Sačekaj trenutak.";
     case "INVALID_IMAGE":
-      return "Ta fotografija nije podržana. Izaberi JPG, PNG ili WebP do 10 MB.";
+    case "UNSUPPORTED_TYPE":
+      return "Ta fotografija nije podržana. Izaberi JPG, PNG ili WebP.";
+    case "TOO_LARGE":
+      return "Fotografija je prevelika. Izaberi neku do 10 MB.";
     case "TRY_ON_DISABLED":
     case "PRODUCT_NOT_ELIGIBLE":
       return "Ovaj komad trenutno nije dostupan za probu.";
@@ -81,6 +85,7 @@ function TryOnSheet({
   purchaseUrl,
   shareBaseUrl,
   shopHref,
+  privacyHref,
   onClose,
 }: Props & { onClose: () => void }) {
   const [step, setStep] = useState<Step>("photo");
@@ -333,6 +338,15 @@ function TryOnSheet({
                 automatski briše nakon obrade.
               </span>
             </label>
+
+            <a
+              href={privacyHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-block text-xs font-semibold text-[var(--kms-ink-soft)] underline underline-offset-4"
+            >
+              Kako čuvamo tvoju fotografiju
+            </a>
 
             <button
               type="button"

@@ -4,7 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "@/components/ui/sonner";
-import "./globals.css";
+import "../globals.css";
 
 const roboto = Roboto({
   subsets: ["latin", "latin-ext"],
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "Ne gubi porudžbine u Instagram DM-ovima. Upravljaj proizvodima, porudžbinama, kupcima i reklamacijama na jednom mestu.",
 };
 
-export default async function RootLayout({
+export default async function MojShopRootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
