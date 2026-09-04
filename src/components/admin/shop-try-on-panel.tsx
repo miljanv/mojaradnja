@@ -86,7 +86,30 @@ export function AdminShopTryOnPanel({
         return;
       }
       setIsEnabled(next);
-      toast.success(next ? "Virtual Try-On omogućen" : "Virtual Try-On onemogućen");
+      if (typeof result.data?.aiCredits === "number") {
+        setCredits(result.data.aiCredits);
+        toast.success(
+          `KakoMiStoji uključen — dodato ${result.data.aiCredits} besplatnih proba`
+        );
+        return;
+      }
+      toast.success(next ? "KakoMiStoji omogućen" : "KakoMiStoji onemogućen");
+    });
+  }
+
+  function grantTenFree() {
+    startTransition(async () => {
+      const result = await adminChangeAiCredits(
+        shopId,
+        10,
+        "Početnih 10 besplatnih KakoMiStoji proba"
+      );
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+      setCredits(result.data!.aiCredits);
+      toast.success("Dodato 10 besplatnih proba");
     });
   }
 
@@ -116,9 +139,10 @@ export function AdminShopTryOnPanel({
   return (
     <div className="mt-6 space-y-6 rounded-xl border border-black/5 bg-[#FDF8F5] p-4 sm:p-5">
       <div>
-        <h3 className="text-base font-semibold">Virtual Try-On</h3>
+        <h3 className="text-base font-semibold">KakoMiStoji — krediti za probu</h3>
         <p className="text-sm text-muted-foreground">
-          Ručna kontrola pristupa i AI kredita (bez naplate u aplikaciji).
+          Ti dodaješ kredite shopu. Svaka uspešna proba troši 1 kredit. Kupac nema
+          dnevni limit — kad ponestane kredita, proba se pauzira.
         </p>
       </div>
 
@@ -141,7 +165,7 @@ export function AdminShopTryOnPanel({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <p className="text-sm font-medium">Trenutno kredita</p>
+        <p className="text-sm font-medium">Preostalih proba</p>
           <p className="text-3xl font-bold tabular-nums">{credits}</p>
         </div>
         <div>
@@ -204,7 +228,10 @@ export function AdminShopTryOnPanel({
       </div>
 
       <div className="space-y-3">
-        <p className="text-sm font-medium">Dodaj ili oduzmi kredite</p>
+        <p className="text-sm font-medium">Dodaj ili oduzmi probe</p>
+        <Button type="button" disabled={pending} onClick={grantTenFree}>
+          +10 besplatnih proba
+        </Button>
         <div className="flex flex-wrap gap-2">
           {PRESETS.map((n) => (
             <Button

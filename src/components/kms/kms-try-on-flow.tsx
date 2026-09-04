@@ -247,8 +247,8 @@ function TryOnSheet({
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-[var(--kms-cream)]">
-      <div className="mx-auto flex min-h-dvh max-w-xl flex-col px-5 pb-10 pt-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[var(--kms-cream)] pb-[env(safe-area-inset-bottom)]">
+      <div className="mx-auto flex min-h-dvh max-w-xl flex-col px-4 pb-10 pt-[max(1rem,env(safe-area-inset-top))] sm:px-5">
         <div className="flex items-center justify-between">
           <p className="truncate pr-3 text-sm font-semibold text-[var(--kms-ink-soft)]">
             {productName}
@@ -264,25 +264,40 @@ function TryOnSheet({
         </div>
 
         {step === "photo" && (
-          <div className="mt-6">
-            <h2 className="text-2xl font-extrabold tracking-[-0.02em]">
+          <div className="mt-5">
+            <h2 className="text-[1.65rem] font-extrabold tracking-[-0.02em]">
               Dodaj svoju fotografiju
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-[var(--kms-ink-soft)]">
-              Za najbolji rezultat koristi fotografiju celog tela, sprijeda, uz dobro
-              osvetljenje.
+              Treba ti fotografija celog tela, sprijeda — kao portret od glave do
+              stopala, uz dobro osvetljenje.
             </p>
 
-            <label className="kms-card mt-6 flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-2 border-dashed text-center">
+            <div className="mx-auto mt-4 max-w-[200px]">
+              <div className="kms-card relative aspect-[3/4] overflow-hidden">
+                <Image
+                  src="/kms/tip-full-body.jpg"
+                  alt="Primer: celo telo, sprijeda"
+                  fill
+                  sizes="200px"
+                  className="object-cover object-top"
+                />
+              </div>
+              <p className="mt-2 text-center text-[11px] text-[var(--kms-ink-soft)]">
+                Ovako treba da izgleda tvoja slika
+              </p>
+            </div>
+
+            <label className="kms-card mt-5 flex min-h-28 cursor-pointer flex-col items-center justify-center gap-2 border-dashed px-4 py-6 text-center">
               <Sparkles className="h-6 w-6 text-[var(--kms-accent)]" />
               <span className="text-sm font-semibold">Izaberi ili slikaj</span>
-              <span className="px-6 text-xs text-[var(--kms-ink-soft)]">
+              <span className="text-xs text-[var(--kms-ink-soft)]">
                 JPG, PNG ili WebP, do 10 MB
               </span>
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
-                capture="user"
+                capture="environment"
                 className="sr-only"
                 onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
               />

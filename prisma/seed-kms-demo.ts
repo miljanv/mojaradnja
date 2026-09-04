@@ -22,8 +22,7 @@ const PRODUCTS = [
     category: "Haljine",
     tryOnCategory: "one-pieces",
     tryOnPhotoType: "flat-lay",
-    imageUrl:
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=900&h=1200&fit=crop",
+    imageUrl: "/kms/demo/satenska-haljina.jpg",
   },
   {
     name: "Lanena košulja",
@@ -32,8 +31,7 @@ const PRODUCTS = [
     category: "Košulje",
     tryOnCategory: "tops",
     tryOnPhotoType: "flat-lay",
-    imageUrl:
-      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=900&h=1200&fit=crop",
+    imageUrl: "/kms/demo/lanena-kosulja.jpg",
   },
   {
     name: "Oversize sako",
@@ -41,9 +39,8 @@ const PRODUCTS = [
     price: 8900,
     category: "Sakoi",
     tryOnCategory: "tops",
-    tryOnPhotoType: "model",
-    imageUrl:
-      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=900&h=1200&fit=crop",
+    tryOnPhotoType: "flat-lay",
+    imageUrl: "/kms/demo/oversize-sako.jpg",
   },
   {
     name: "Pletena majica",
@@ -52,8 +49,7 @@ const PRODUCTS = [
     category: "Majice",
     tryOnCategory: "tops",
     tryOnPhotoType: "flat-lay",
-    imageUrl:
-      "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=900&h=1200&fit=crop",
+    imageUrl: "/kms/demo/pletena-majica.jpg",
   },
 ];
 
@@ -113,6 +109,10 @@ async function main() {
         tryOnCategory: item.tryOnCategory,
         tryOnPhotoType: item.tryOnPhotoType,
       },
+    });
+
+    await prisma.productImage.deleteMany({
+      where: { productId: product.id, url: { not: item.imageUrl } },
     });
 
     const image =

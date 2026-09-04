@@ -50,7 +50,8 @@ export const FAL_TRY_ON_MODEL = "fal-ai/fashn/tryon/v1.6";
 export const TRY_ON_PROVIDER_ID = "fal-fashn-v1.6";
 
 export const VISITOR_COOKIE_NAME = "ms_visitor_id";
-export const MAX_GENERATIONS_PER_VISITOR_24H = 2;
+/** Granted automatically the first time an admin enables KakoMiStoji for a shop. */
+export const FREE_TRY_ON_CREDITS = 10;
 export const MAX_ACTIVE_JOBS_PER_PRODUCT = 1;
 export const JOB_POLL_INTERVAL_MS = 2500;
 export const STALE_PROCESSING_HOURS = 1;

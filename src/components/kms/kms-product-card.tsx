@@ -27,12 +27,12 @@ export function KmsProductCard({ href, name, price, imageUrl, priority }: Props)
         )}
       </div>
 
-      <div className="p-3">
-        <p className="truncate text-sm font-semibold">{name}</p>
-        <p className="mt-0.5 text-sm text-[var(--kms-ink-soft)]">
+      <div className="p-2.5 sm:p-3">
+        <p className="truncate text-[13px] font-semibold sm:text-sm">{name}</p>
+        <p className="mt-0.5 text-xs text-[var(--kms-ink-soft)] sm:text-sm">
           {formatCurrency(price)}
         </p>
-        <span className="kms-cta mt-3 flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-[13px] font-bold">
+        <span className="kms-cta mt-2.5 flex min-h-10 items-center justify-center gap-1.5 rounded-full px-2 py-2 text-xs font-bold sm:mt-3 sm:text-[13px]">
           <Sparkles className="h-3.5 w-3.5" />
           Probaj na sebi
         </span>

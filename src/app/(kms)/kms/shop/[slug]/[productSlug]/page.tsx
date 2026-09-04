@@ -70,7 +70,7 @@ export default async function KmsProductPage({ params }: PageProps) {
       <KmsTrack event="product_view" shopSlug={shop.slug} productId={product.id} />
       <KmsHeader />
 
-      <main className="mx-auto w-full max-w-3xl flex-1 px-5 pb-16 pt-6">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-14 pt-4 sm:px-5 sm:pb-16 sm:pt-6">
         <Link
           href={`${prefix}/shop/${shop.slug}`}
           className="inline-flex items-center gap-1.5 text-sm text-[var(--kms-ink-soft)]"

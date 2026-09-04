@@ -10,7 +10,6 @@ import { getFetchableImageUrl, getPublicImageUrl, uploadImageFromUrl } from "./s
 import { trackTryOnEvent } from "./analytics";
 import {
   MAX_ACTIVE_JOBS_PER_PRODUCT,
-  MAX_GENERATIONS_PER_VISITOR_24H,
   STALE_PROCESSING_HOURS,
   TRY_ON_CATEGORIES,
   TRY_ON_ERROR_CODES,
@@ -92,21 +91,6 @@ export async function createTryOnJob(params: {
     throw new TryOnServiceError(
       TRY_ON_ERROR_CODES.AI_CREDITS_EXHAUSTED,
       "Shop trenutno nema dostupnih AI kredita."
-    );
-  }
-
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const recentCount = await prisma.tryOnJob.count({
-    where: {
-      visitorSessionId: params.visitorSessionId,
-      createdAt: { gte: since },
-      status: { not: "FAILED" },
-    },
-  });
-  if (recentCount >= MAX_GENERATIONS_PER_VISITOR_24H) {
-    throw new TryOnServiceError(
-      TRY_ON_ERROR_CODES.RATE_LIMITED,
-      "Dostigli ste limit generisanja za danas. Pokušajte sutra."
     );
   }
 

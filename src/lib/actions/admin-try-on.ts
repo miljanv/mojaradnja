@@ -8,18 +8,38 @@ import {
   setShopVirtualTryOnEnabled,
   TryOnServiceError,
 } from "@/lib/try-on/credits";
+import { FREE_TRY_ON_CREDITS } from "@/lib/try-on/types";
 import { prisma } from "@/lib/db";
 import type { ActionResult } from "@/lib/actions/shop";
 
 export async function adminSetShopTryOn(
   shopId: string,
   enabled: boolean
-): Promise<ActionResult> {
+): Promise<ActionResult<{ aiCredits?: number }>> {
   try {
     await requireAdminAccess();
+    const user = await getAuthUser();
     await setShopVirtualTryOnEnabled(shopId, enabled);
+
+    let aiCredits: number | undefined;
+    if (enabled && user) {
+      const shop = await prisma.shop.findUnique({
+        where: { id: shopId },
+        select: { aiCredits: true },
+      });
+      if (shop && shop.aiCredits === 0) {
+        const granted = await adminAdjustCredits({
+          shopId,
+          amount: FREE_TRY_ON_CREDITS,
+          note: `Početnih ${FREE_TRY_ON_CREDITS} besplatnih KakoMiStoji proba`,
+          createdByUserId: user.id,
+        });
+        aiCredits = granted.aiCredits;
+      }
+    }
+
     revalidatePath("/admin");
-    return { success: true };
+    return { success: true, data: { aiCredits } };
   } catch (e) {
     return {
       success: false,

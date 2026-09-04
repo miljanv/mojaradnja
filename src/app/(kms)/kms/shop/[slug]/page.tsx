@@ -62,13 +62,13 @@ export default async function KmsShopPage({ params }: PageProps) {
           instagramUsername={shop.instagramUsername}
         />
 
-        <section className="mx-auto max-w-5xl px-5 pb-14">
+        <section className="mx-auto max-w-5xl px-4 pb-12 sm:px-5 sm:pb-14">
           {products.length === 0 ? (
             <p className="kms-card p-6 text-sm text-[var(--kms-ink-soft)]">
               Ovaj shop trenutno nema komada dostupnih za probu. Svrati ponovo uskoro.
             </p>
           ) : (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
               {products.map((product, i) => (
                 <KmsProductCard
                   key={product.id}

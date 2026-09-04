@@ -9,10 +9,13 @@
   --kms-accent-deep: #7c4dff;
 
   min-height: 100dvh;
+  overflow-x: hidden;
   background: var(--kms-cream);
   color: var(--kms-ink);
   font-family: var(--font-kms), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 .kms-gradient-text {
@@ -43,5 +46,11 @@
 .kms-card {
   background: var(--kms-surface);
   border: 1px solid var(--kms-line);
-  border-radius: 20px;
+  border-radius: 16px;
+}
+
+@media (min-width: 640px) {
+  .kms-card {
+    border-radius: 20px;
+  }
 }

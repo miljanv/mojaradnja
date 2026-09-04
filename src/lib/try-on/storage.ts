@@ -62,6 +62,15 @@ export async function getFetchableImageUrl(keyOrUrl: string): Promise<string> {
     return keyOrUrl;
   }
 
+  if (keyOrUrl.startsWith("/")) {
+    const base = (
+      process.env.NEXT_PUBLIC_KMS_URL ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      "https://kakomistoji.app"
+    ).replace(/\/$/, "");
+    return `${base}${keyOrUrl}`;
+  }
+
   const key = extractUploadThingKey(keyOrUrl);
   try {
     if (typeof utapi.generateSignedURL === "function") {

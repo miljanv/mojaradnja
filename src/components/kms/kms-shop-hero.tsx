@@ -31,7 +31,7 @@ export function KmsShopHero({ name, logoUrl, instagramUsername }: Props) {
   const igHandle = instagramUsername?.replace(/^@/, "");
 
   return (
-    <section className="mx-auto max-w-5xl px-5 pb-6 pt-8">
+    <section className="mx-auto max-w-5xl px-4 pb-4 pt-5 sm:px-5 sm:pb-6 sm:pt-8">
       <div className="flex items-center gap-3.5">
         {logoUrl ? (
           <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full ring-1 ring-[var(--kms-line)]">
@@ -65,7 +65,7 @@ export function KmsShopHero({ name, logoUrl, instagramUsername }: Props) {
         </div>
       </div>
 
-      <h1 className="mt-6 text-[1.85rem] font-extrabold leading-[1.1] tracking-[-0.03em] sm:text-4xl">
+      <h1 className="mt-4 text-[1.55rem] font-extrabold leading-[1.12] tracking-[-0.03em] sm:mt-6 sm:text-4xl">
         Kako ti stoji kolekcija iz{" "}
         <span className="kms-gradient-text">{name}</span>?
       </h1>
