@@ -18,6 +18,7 @@ import {
 import { AdminExtendForm } from "./extend-form";
 import { ImpersonateShopButton } from "@/components/admin/impersonate-shop-button";
 import { AdminShopTryOnPanel } from "@/components/admin/shop-try-on-panel";
+import { kmsShopUrl } from "@/lib/kms/config";
 
 type Params = Promise<{ id: string }>;
 
@@ -37,7 +38,12 @@ export default async function AdminUserDetailPage({ params }: { params: Params }
             take: 20,
           },
           _count: {
-            select: { products: true, orders: true, customers: true },
+            select: {
+              products: true,
+              orders: true,
+              customers: true,
+              tryOnJobs: true,
+            },
           },
           aiCreditTransactions: {
             orderBy: { createdAt: "desc" },
@@ -164,6 +170,14 @@ export default async function AdminUserDetailPage({ params }: { params: Params }
               aiCredits={shop.aiCredits}
               transactions={shop.aiCreditTransactions}
               jobs={shop.tryOnJobs}
+              kms={{
+                publicUrl: kmsShopUrl(shop.slug),
+                slug: shop.slug,
+                ownerEnabled: shop.kmsPublicEnabled,
+                instagramUsername: shop.instagramUsername,
+                purchaseUrl: shop.purchaseUrl,
+                totalJobs: shop._count.tryOnJobs,
+              }}
             />
           </CardContent>
         </Card>

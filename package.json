@@ -12,6 +12,7 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:demo": "tsx scripts/seed-demo.ts",
+    "db:seed:kms-demo": "tsx prisma/seed-kms-demo.ts",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate",
     "test": "vitest run --config vitest.config.mts",

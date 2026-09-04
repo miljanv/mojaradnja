@@ -51,6 +51,11 @@ model Shop {
   orderCounter        Int               @default(1000)
   virtualTryOnEnabled Boolean           @default(false)
   aiCredits           Int               @default(0)
+  /// KakoMiStoji: external buy/contact link used on the public result page.
+  purchaseUrl         String?
+  /// KakoMiStoji: owner-side switch. The public page needs this AND the
+  /// admin-granted `virtualTryOnEnabled`.
+  kmsPublicEnabled    Boolean           @default(true)
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
   owner               User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
@@ -95,6 +100,8 @@ model Product {
   tryOnCategory        String?
   tryOnPhotoType       String?
   tryOnGarmentImageKey String?
+  /// KakoMiStoji: per-product buy link, overrides the shop-level one.
+  purchaseUrl          String?
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
   shop                 Shop             @relation(fields: [shopId], references: [id], onDelete: Cascade)
@@ -348,6 +355,14 @@ enum TryOnAnalyticsEventType {
   TRY_ON_FAILED
   ORDER_STARTED_AFTER_TRY_ON
   ORDER_CREATED_AFTER_TRY_ON
+  KMS_LANDING_VIEW
+  KMS_SHOP_VIEW
+  KMS_PRODUCT_VIEW
+  KMS_PHOTO_UPLOADED
+  KMS_CONSENT_GIVEN
+  KMS_SHARE_CLICKED
+  KMS_BUY_CLICKED
+  KMS_TRY_ANOTHER_CLICKED
 }
 
 model TryOnJob {
@@ -366,6 +381,8 @@ model TryOnJob {
   errorCode           String?
   errorMessage        String?
   idempotencyKey      String?        @unique
+  /// KakoMiStoji: opaque token for the public shareable result page.
+  shareToken          String?        @unique
   retryCount          Int            @default(0)
   createdAt           DateTime       @default(now())
   startedAt           DateTime?

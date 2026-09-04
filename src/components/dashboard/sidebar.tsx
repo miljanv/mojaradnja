@@ -12,6 +12,7 @@ import {
   AlertTriangle,
   MessageSquare,
   Settings,
+  Sparkles,
   Store,
   LogOut,
 } from "lucide-react";
@@ -59,6 +60,11 @@ const navItems = [
     href: "/dashboard/templates",
     icon: MessageSquare,
     labelKey: "templates" as const,
+  },
+  {
+    href: "/dashboard/kakomistoji",
+    icon: Sparkles,
+    labelKey: "kakomistoji" as const,
   },
   { href: "/dashboard/shop", icon: Settings, labelKey: "settings" as const },
 ];

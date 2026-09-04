@@ -39,6 +39,15 @@ type Job = {
   product: { name: string };
 };
 
+type KmsInfo = {
+  publicUrl: string;
+  slug: string;
+  ownerEnabled: boolean;
+  instagramUsername: string | null;
+  purchaseUrl: string | null;
+  totalJobs: number;
+};
+
 const PRESETS = [10, 30, 50, 200];
 
 export function AdminShopTryOnPanel({
@@ -47,12 +56,14 @@ export function AdminShopTryOnPanel({
   aiCredits,
   transactions,
   jobs,
+  kms,
 }: {
   shopId: string;
   enabled: boolean;
   aiCredits: number;
   transactions: Tx[];
   jobs: Job[];
+  kms: KmsInfo;
 }) {
   const [pending, startTransition] = useTransition();
   const [isEnabled, setIsEnabled] = useState(enabled);
@@ -128,9 +139,68 @@ export function AdminShopTryOnPanel({
         </div>
       </div>
 
-      <div>
-        <p className="text-sm font-medium">Trenutno kredita</p>
-        <p className="text-3xl font-bold tabular-nums">{credits}</p>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <p className="text-sm font-medium">Trenutno kredita</p>
+          <p className="text-3xl font-bold tabular-nums">{credits}</p>
+        </div>
+        <div>
+          <p className="text-sm font-medium">Ukupno generacija</p>
+          <p className="text-3xl font-bold tabular-nums">{kms.totalJobs}</p>
+        </div>
+      </div>
+
+      <div className="space-y-3 rounded-lg border border-black/5 bg-white p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h4 className="text-sm font-semibold">KakoMiStoji</h4>
+          <Badge variant={kms.ownerEnabled ? "secondary" : "outline"}>
+            {kms.ownerEnabled
+              ? "Vlasnik uključio javnu stranicu"
+              : "Vlasnik isključio javnu stranicu"}
+          </Badge>
+        </div>
+
+        <dl className="grid gap-2 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="text-muted-foreground">Public slug</dt>
+            <dd className="font-medium">{kms.slug}</dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground">Instagram</dt>
+            <dd className="font-medium">
+              {kms.instagramUsername ? `@${kms.instagramUsername}` : "—"}
+            </dd>
+          </div>
+          <div className="sm:col-span-2">
+            <dt className="text-muted-foreground">Link za kupovinu</dt>
+            <dd className="truncate font-medium">{kms.purchaseUrl || "—"}</dd>
+          </div>
+        </dl>
+
+        <code className="block truncate rounded bg-[#FDF8F5] px-3 py-2 text-xs">
+          {kms.publicUrl}
+        </code>
+
+        <div className="flex flex-wrap gap-2">
+          <a href={kms.publicUrl} target="_blank" rel="noopener noreferrer">
+            <Button type="button" size="sm" variant="outline">
+              Otvori KakoMiStoji stranicu
+            </Button>
+          </a>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              void navigator.clipboard.writeText(kms.publicUrl).then(
+                () => toast.success("Link kopiran"),
+                () => toast.error("Kopiranje nije uspelo")
+              );
+            }}
+          >
+            Kopiraj link
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-3">

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { createId } from "@/lib/try-on/id";
+import { createId, createShareToken } from "@/lib/try-on/id";
 import {
   consumeCreditForJob,
   refundCreditForJob,
@@ -145,6 +145,7 @@ export async function createTryOnJob(params: {
           status: "PENDING",
           creditConsumed: true,
           idempotencyKey: params.idempotencyKey,
+          shareToken: createShareToken(),
         },
       });
 
@@ -252,6 +253,7 @@ export async function syncTryOnJobStatus(
   resultImageUrl?: string;
   errorCode?: string | null;
   errorMessage?: string | null;
+  shareToken?: string | null;
 }> {
   const job = await prisma.tryOnJob.findUnique({ where: { id: jobId } });
   if (!job) {
@@ -279,6 +281,7 @@ export async function syncTryOnJobStatus(
       resultImageUrl: job.resultImageKey
         ? getPublicImageUrl(job.resultImageKey)
         : undefined,
+      shareToken: job.shareToken,
     };
   }
 
@@ -340,6 +343,7 @@ export async function syncTryOnJobStatus(
       resultImageUrl: fresh?.resultImageKey
         ? getPublicImageUrl(fresh.resultImageKey)
         : undefined,
+      shareToken: fresh?.shareToken,
     };
   }
 
@@ -348,12 +352,14 @@ export async function syncTryOnJobStatus(
       status.resultImageUrl!,
       `try-on-${job.id}.jpg`
     );
+    const shareToken = job.shareToken ?? createShareToken();
     await prisma.tryOnJob.update({
       where: { id: job.id },
       data: {
         status: "COMPLETED",
         resultImageKey: uploaded.key,
         completedAt: new Date(),
+        shareToken,
       },
     });
     await trackTryOnEvent({
@@ -367,6 +373,7 @@ export async function syncTryOnJobStatus(
       id: job.id,
       status: "COMPLETED",
       resultImageUrl: uploaded.url,
+      shareToken,
     };
   } catch (e) {
     await failJobAndRefund(

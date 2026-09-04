@@ -1,0 +1,47 @@
+/* KakoMiStoji brand surface — intentionally separate from the MojShop palette. */
+.kms-root {
+  --kms-ink: #100f14;
+  --kms-ink-soft: #55505f;
+  --kms-cream: #faf7f4;
+  --kms-surface: #ffffff;
+  --kms-line: rgba(16, 15, 20, 0.08);
+  --kms-accent: #ff5f8f;
+  --kms-accent-deep: #7c4dff;
+
+  min-height: 100dvh;
+  background: var(--kms-cream);
+  color: var(--kms-ink);
+  font-family: var(--font-kms), var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.kms-gradient-text {
+  background: linear-gradient(96deg, var(--kms-accent) 0%, var(--kms-accent-deep) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.kms-cta {
+  background: linear-gradient(96deg, var(--kms-accent) 0%, var(--kms-accent-deep) 100%);
+  color: #fff;
+  box-shadow: 0 10px 30px -12px rgba(124, 77, 255, 0.65);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.kms-cta:active {
+  transform: translateY(1px) scale(0.995);
+}
+
+@media (hover: hover) {
+  .kms-cta:hover {
+    box-shadow: 0 16px 38px -12px rgba(124, 77, 255, 0.7);
+    opacity: 0.96;
+  }
+}
+
+.kms-card {
+  background: var(--kms-surface);
+  border: 1px solid var(--kms-line);
+  border-radius: 20px;
+}

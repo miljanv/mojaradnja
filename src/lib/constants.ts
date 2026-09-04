@@ -9,6 +9,9 @@ export const RESERVED_ROUTES = [
   "_next",
   "favicon.ico",
   "onboarding",
+  "kms",
+  "shop",
+  "demo",
 ] as const;
 
 export const TRIAL_DAYS = 30;
