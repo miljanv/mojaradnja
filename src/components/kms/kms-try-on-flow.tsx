@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Check, Sparkles, X } from "lucide-react";
+import { Camera, Check, Images, Sparkles, X } from "lucide-react";
 import { ALLOWED_IMAGE_TYPES, compressImage } from "@/lib/try-on/compress-image";
 import { kmsTrack } from "@/lib/kms/analytics-client";
 
@@ -288,20 +288,38 @@ function TryOnSheet({
               </p>
             </div>
 
-            <label className="kms-card mt-5 flex min-h-28 cursor-pointer flex-col items-center justify-center gap-2 border-dashed px-4 py-6 text-center">
-              <Sparkles className="h-6 w-6 text-[var(--kms-accent)]" />
-              <span className="text-sm font-semibold">Izaberi ili slikaj</span>
-              <span className="text-xs text-[var(--kms-ink-soft)]">
+            <div className="mt-5 space-y-2.5">
+              <label className="kms-cta flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full px-6 py-3.5 text-base font-bold">
+                <Images className="h-4 w-4" />
+                Izaberi iz galerije
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={(e) => {
+                    pickFile(e.target.files?.[0] ?? null);
+                    e.currentTarget.value = "";
+                  }}
+                />
+              </label>
+              <label className="flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-[var(--kms-line)] bg-white px-6 py-3.5 text-base font-semibold">
+                <Camera className="h-4 w-4" />
+                Slikaj
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="sr-only"
+                  onChange={(e) => {
+                    pickFile(e.target.files?.[0] ?? null);
+                    e.currentTarget.value = "";
+                  }}
+                />
+              </label>
+              <p className="text-center text-xs text-[var(--kms-ink-soft)]">
                 JPG, PNG ili WebP, do 10 MB
-              </span>
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                capture="environment"
-                className="sr-only"
-                onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
-              />
-            </label>
+              </p>
+            </div>
           </div>
         )}
 

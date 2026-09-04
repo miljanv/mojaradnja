@@ -1,4 +1,11 @@
-export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+export const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+];
 export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
 export type CompressedImage = {
