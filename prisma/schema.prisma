@@ -439,3 +439,49 @@ model TryOnAnalyticsEvent {
   @@index([tryOnJobId])
   @@index([visitorSessionId])
 }
+
+// ---------------------------------------------------------------------------
+// Mobile app ("Probaj" virtual try-on): phone-number auth + credit wallet.
+// Independent of the merchant/shop CRM data above.
+// ---------------------------------------------------------------------------
+
+enum MobileTryOnStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model MobileUser {
+  id           String        @id @default(cuid())
+  phone        String        @unique
+  credits      Int           @default(3)
+  token        String?       @unique
+  otpCodeHash  String?
+  otpExpiresAt DateTime?
+  otpAttempts  Int           @default(0)
+  /// RevenueCat App User ID, used to reconcile purchases via webhook.
+  rcAppUserId  String?       @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  tryOns       MobileTryOn[]
+
+  @@index([token])
+}
+
+model MobileTryOn {
+  id              String            @id @default(cuid())
+  userId          String
+  status          MobileTryOnStatus @default(PROCESSING)
+  provider        String            @default("mock")
+  personImageUrl  String
+  garmentImageUrl String
+  resultImageUrl  String?
+  category        String            @default("one-pieces")
+  errorMessage    String?
+  creditRefunded  Boolean           @default(false)
+  createdAt       DateTime          @default(now())
+  completedAt     DateTime?
+  user            MobileUser        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
